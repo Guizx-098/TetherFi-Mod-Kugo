@@ -1,0 +1,287 @@
+/*
+ * Copyright 2026 pyamsoft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at:
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.pyamsoft.tetherfi.server.netty.handler
+
+import androidx.annotation.CheckResult
+import com.pyamsoft.pydroid.util.AppDispatchers
+import com.pyamsoft.tetherfi.server.netty.TestSetup
+import com.pyamsoft.tetherfi.server.netty.withLogging
+import com.pyamsoft.tetherfi.server.proxy.session.address
+import com.pyamsoft.tetherfi.server.proxy.session.netty.handler.channel.ChannelCreator
+import com.pyamsoft.tetherfi.server.proxy.session.netty.handler.http.Http1ProxyHandler
+import com.pyamsoft.tetherfi.server.runBlockingWithDelays
+import io.netty.buffer.Unpooled
+import io.netty.channel.Channel
+import io.netty.channel.ChannelFuture
+import io.netty.channel.ChannelInboundHandler
+import io.netty.handler.codec.http.DefaultFullHttpRequest
+import io.netty.handler.codec.http.HttpHeaderNames
+import io.netty.handler.codec.http.HttpMethod
+import io.netty.handler.codec.http.HttpVersion
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancelChildren
+import org.junit.Test
+
+class Http1HandlerTest {
+
+  // Assertions finish before the real outbound DNS and connect do, and the timeout waits for
+  // children
+  private fun runHttp1Test(block: suspend CoroutineScope.() -> Unit) = runBlockingWithDelays {
+    try {
+      block()
+    } finally {
+      coroutineContext.cancelChildren()
+    }
+  }
+
+  @CheckResult
+  private fun CoroutineScope.http1HandlerFactory(
+      factory: TestSetup.FactoryParams,
+      onConnectAttempt: (host: String, port: Int) -> Unit = { _, _ -> },
+  ): ChannelInboundHandler {
+    val realTcpSocketCreator = factory.provideTcpChannelCreator()
+    val capturingTcpSocketCreator =
+        object : ChannelCreator {
+          override fun bind(onChannelInitialized: (Channel) -> Unit): ChannelFuture =
+              realTcpSocketCreator.bind(onChannelInitialized)
+
+          override fun connect(
+              hostName: String,
+              port: Int,
+              onChannelInitialized: (Channel) -> Unit,
+          ): ChannelFuture {
+            onConnectAttempt(hostName, port)
+            return realTcpSocketCreator.connect(hostName, port, onChannelInitialized)
+          }
+        }
+
+    val factory =
+        Http1ProxyHandler.factory(
+            scope = this,
+            isDebug = true,
+            serverSocketTimeout = factory.serverSocketTimeout,
+            allowedClients = factory.allowed,
+            blockedClients = factory.blocked,
+            dispatchers = factory.dispatchers,
+            tcpSocketCreator = capturingTcpSocketCreator,
+        )
+    return factory.create(Unit)
+  }
+
+  private suspend fun CoroutineScope.assertForwardedTo(
+      uri: String,
+      expectedHost: String,
+      expectedPort: Int,
+      expectedPath: String,
+  ) {
+    withLogging {
+      var capturedHost: String? = null
+      var capturedPort: Int? = null
+
+      val context =
+          TestSetup.withHandler(
+              scope = this,
+              isHttpEnabled = true,
+              isSocksEnabled = false,
+              factory = {
+                this@assertForwardedTo.http1HandlerFactory(
+                    factory = it,
+                    onConnectAttempt = { host, port ->
+                      capturedHost = host
+                      capturedPort = port
+                    },
+                )
+              },
+              // TODO(Peter): Do we need test dispatchers?
+              dispatchers = AppDispatchers.create(),
+          )
+
+      val channel = context.channel
+      Http1ProxyHandler.applyChannelAttributes(
+          channel = channel,
+          client = context.resolver.ensure(channel.remoteAddress().address),
+      )
+
+      val req =
+          DefaultFullHttpRequest(
+              HttpVersion.HTTP_1_1,
+              HttpMethod.GET,
+              uri,
+              Unpooled.EMPTY_BUFFER,
+          )
+
+      channel.apply {
+        writeInbound(req)
+        flushInbound()
+        runPendingTasks()
+        checkException()
+      }
+
+      // The outbound TCP connect was attempted against the resolved host/port
+      assertNotNull(capturedHost)
+      assertEquals(expectedHost, capturedHost)
+      assertEquals(expectedPort, capturedPort)
+      assertEquals(expectedPath, req.uri())
+    }
+  }
+
+  @Test
+  fun `test HTTP1 handler receives connections`(): Unit = runHttp1Test {
+    withLogging {
+      val tcpConnection = CompletableDeferred<Channel>()
+      val context =
+          TestSetup.withHandler(
+              scope = this,
+              isHttpEnabled = true,
+              isSocksEnabled = false,
+              onTcpChannelCreated = { tcpConnection.complete(it) },
+              factory = { this@runHttp1Test.http1HandlerFactory(it) },
+              // TODO(Peter): Do we need test dispatchers?
+              dispatchers = AppDispatchers.create(),
+          )
+
+      val channel = context.channel
+      Http1ProxyHandler.applyChannelAttributes(
+          channel = channel,
+          client = context.resolver.ensure(channel.remoteAddress().address),
+      )
+
+      val content = Unpooled.copiedBuffer("OK", Charsets.UTF_8)
+      val req =
+          DefaultFullHttpRequest(
+                  HttpVersion.HTTP_1_1,
+                  HttpMethod.CONNECT,
+                  "google.com:443",
+                  content,
+              )
+              .apply {
+                headers().apply {
+                  set(HttpHeaderNames.HOST, "google.com")
+                  set(HttpHeaderNames.CONTENT_LENGTH, content.readableBytes())
+                }
+              }
+
+      channel.apply {
+        writeInbound(req)
+        flushInbound()
+        runPendingTasks()
+        checkException()
+      }
+
+      // A TCP outbound has been created
+      assertNotNull(tcpConnection.await())
+    }
+  }
+
+  @Test
+  fun `test HTTP1 handler fallback to Host header`(): Unit = runHttp1Test {
+    withLogging {
+      val tcpConnection = CompletableDeferred<Channel>()
+      val context =
+          TestSetup.withHandler(
+              scope = this,
+              isHttpEnabled = true,
+              isSocksEnabled = false,
+              onTcpChannelCreated = { tcpConnection.complete(it) },
+              factory = { this@runHttp1Test.http1HandlerFactory(it) },
+              // TODO(Peter): Do we need test dispatchers?
+              dispatchers = AppDispatchers.create(),
+          )
+
+      val channel = context.channel
+      Http1ProxyHandler.applyChannelAttributes(
+          channel = channel,
+          client = context.resolver.ensure(channel.remoteAddress().address),
+      )
+
+      // No host in the URL will resolve via the host header
+      val req =
+          DefaultFullHttpRequest(
+                  HttpVersion.HTTP_1_1,
+                  HttpMethod.GET,
+                  "/",
+                  Unpooled.EMPTY_BUFFER,
+              )
+              .apply { headers().apply { set(HttpHeaderNames.HOST, "192.168.2.1") } }
+
+      channel.apply {
+        writeInbound(req)
+        flushInbound()
+        runPendingTasks()
+        checkException()
+      }
+
+      // A TCP outbound has been created
+      assertNotNull(tcpConnection.await())
+    }
+  }
+
+  @Test
+  fun `test HTTP1 forward resolves default port 80 with root path`(): Unit = runHttp1Test {
+    assertForwardedTo(
+        uri = "http://192.168.10.123/",
+        expectedHost = "192.168.10.123",
+        expectedPort = 80,
+        expectedPath = "/",
+    )
+  }
+
+  @Test
+  fun `test HTTP1S forward resolves default port 443 with root path`(): Unit = runHttp1Test {
+    assertForwardedTo(
+        uri = "https://192.168.1.456",
+        expectedHost = "192.168.1.456",
+        expectedPort = 443,
+        expectedPath = "/",
+    )
+  }
+
+  @Test
+  fun `test HTTP1 forward resolves default port 80 with sub path`(): Unit = runHttp1Test {
+    assertForwardedTo(
+        uri = "http://192.168.4.567/hello",
+        expectedHost = "192.168.4.567",
+        expectedPort = 80,
+        expectedPath = "/hello",
+    )
+  }
+
+  @Test
+  fun `test HTTP1 forward resolves explicit port with sub path, not a fallback default port`():
+      Unit = runHttp1Test {
+    assertForwardedTo(
+        uri = "http://192.168.1.321:8096/hello/config.json",
+        expectedHost = "192.168.1.321",
+        expectedPort = 8096,
+        expectedPath = "/hello/config.json",
+    )
+  }
+
+  @Test
+  fun `test HTTP1S forward resolves explicit port with sub path, not a fallback default port`():
+      Unit = runHttp1Test {
+    assertForwardedTo(
+        uri = "https://192.168.5.67:8123/this/here.json?query=string",
+        expectedHost = "192.168.5.67",
+        expectedPort = 8123,
+        expectedPath = "/this/here.json?query=string",
+    )
+  }
+}

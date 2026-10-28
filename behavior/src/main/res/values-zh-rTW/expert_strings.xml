@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright 2026 pyamsoft
+  ~ Copyright 2026 林博仁(Buo-ren Lin)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at:
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources>
+  <string name="expert_title">專業設定</string>
+  <string
+    name="expert_description"
+  >以下設定為提供進階使用者使用。\n\n調整這些選項可能會完全改變 %1$s 的運作方式，僅在自負責任下繼續操作。大部分使用者皆「不」需要變更這些設定。</string>
+</resources>

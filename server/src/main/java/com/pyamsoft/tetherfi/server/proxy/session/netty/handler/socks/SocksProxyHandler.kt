@@ -1,0 +1,289 @@
+/*
+ * Copyright 2026 pyamsoft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at:
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.pyamsoft.tetherfi.server.proxy.session.netty.handler.socks
+
+import androidx.annotation.CheckResult
+import com.pyamsoft.pydroid.core.LintIgnoreLongMethod
+import com.pyamsoft.pydroid.core.LintIgnoreTooGenericExceptionCaught
+import com.pyamsoft.pydroid.core.cast
+import com.pyamsoft.pydroid.util.AppDispatchers
+import com.pyamsoft.tetherfi.core.Timber
+import com.pyamsoft.tetherfi.server.ServerSocketTimeout
+import com.pyamsoft.tetherfi.server.clients.AllowedClients
+import com.pyamsoft.tetherfi.server.clients.BlockedClients
+import com.pyamsoft.tetherfi.server.clients.TetherClient
+import com.pyamsoft.tetherfi.server.proxy.session.netty.handler.ProxyHandler
+import com.pyamsoft.tetherfi.server.proxy.session.netty.handler.RelayHandler
+import com.pyamsoft.tetherfi.server.proxy.session.netty.handler.applyBandwidthLimitFor
+import com.pyamsoft.tetherfi.server.proxy.session.netty.handler.channel.ChannelCreator
+import com.pyamsoft.tetherfi.server.proxy.session.netty.handler.dropHandler
+import com.pyamsoft.tetherfi.server.proxy.session.netty.handler.flushAndClose
+import com.pyamsoft.tetherfi.server.proxy.session.netty.handler.runInEventLoop
+import io.netty.channel.Channel
+import io.netty.channel.ChannelHandlerContext
+import io.netty.channel.ChannelPipeline
+import io.netty.handler.codec.socksx.SocksMessage
+import io.netty.handler.codec.socksx.v4.Socks4CommandRequest
+import io.netty.handler.codec.socksx.v5.Socks5CommandRequest
+import io.netty.handler.logging.LogLevel
+import io.netty.handler.logging.LoggingHandler
+import io.netty.util.ReferenceCountUtil
+import io.netty.util.concurrent.Future
+import java.net.InetSocketAddress
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+
+internal abstract class SocksProxyHandler<T : SocksMessage>
+internal constructor(
+    isDebug: Boolean,
+    scope: CoroutineScope,
+    serverSocketTimeout: ServerSocketTimeout,
+    private val allowedClients: AllowedClients,
+    private val blockedClients: BlockedClients,
+    private val tcpSocketCreator: ChannelCreator,
+    dispatchers: AppDispatchers,
+) :
+    ProxyHandler(
+        scope = scope,
+        serverSocketTimeout = serverSocketTimeout,
+        dispatchers = dispatchers,
+        isDebug = isDebug,
+    ) {
+
+  private val relayHandlerFactory =
+      RelayHandler.factory(
+          isDebug = isDebug,
+          scope = scope,
+          allowedClients = allowedClients,
+          blockedClients = blockedClients,
+          serverSocketTimeout = serverSocketTimeout,
+          dispatchers = dispatchers,
+      )
+
+  protected fun handleSocksConnectRequest(ctx: ChannelHandlerContext, channelId: String, msg: T) {
+    if (!isConnectMessageType(msg)) {
+      sendErrorAndClose(ctx, msg)
+      return
+    }
+
+    when (msg) {
+      is Socks4CommandRequest -> {
+        performSocksConnectRequest(ctx, channelId, msg, msg.dstAddr(), msg.dstPort())
+      }
+
+      is Socks5CommandRequest -> {
+        performSocksConnectRequest(ctx, channelId, msg, msg.dstAddr(), msg.dstPort())
+      }
+
+      else -> {
+        Timber.w {
+          "(${channelId}) Invalid MSG interface type $msg. Expected Socks4CommandRequest Socks5CommandRequest"
+        }
+        sendErrorAndClose(ctx, msg)
+      }
+    }
+  }
+
+  @LintIgnoreLongMethod
+  private fun performSocksConnectRequest(
+      ctx: ChannelHandlerContext,
+      channelId: String,
+      msg: T,
+      dstAddr: String?,
+      dstPort: Int,
+  ) {
+    val tag = "${msg.version()}-CONNECT"
+    if (dstAddr.isNullOrBlank()) {
+      Timber.w { "(${channelId}) DROP: $tag Invalid upstream destination address: $dstAddr" }
+      sendFailureAndClose(ctx, msg)
+      return
+    }
+
+    if (dstPort !in VALID_PORT_RANGE) {
+      Timber.w { "(${channelId}) DROP: $tag Invalid upstream destination port: $dstPort" }
+      sendFailureAndClose(ctx, msg)
+      return
+    }
+
+    // Don't allow sending messages to local destinations
+    if (isBlockedLocalAddress(dstAddr)) {
+      Timber.w { "($channelId) DROP: $tag Blocked local address: $dstAddr" }
+      sendFailureAndClose(ctx, msg)
+      return
+    }
+
+    val serverChannel = ctx.channel()
+    val remoteClient = serverChannel.remoteAddress().cast<InetSocketAddress>()
+    if (remoteClient == null) {
+      Timber.w { "($channelId) DROP: $tag remoteClient IP is NULL" }
+      sendFailureAndClose(ctx, msg)
+      return
+    }
+
+    val client = getTetherClient(ctx)
+    if (client == null) {
+      Timber.w { "($channelId) DROP: $tag TetherClient is NULL" }
+      sendFailureAndClose(ctx, msg)
+      return
+    }
+
+    // If the client is blocked we do not process any input
+    if (blockedClients.isBlocked(client)) {
+      Timber.w { "($channelId) DROP: $tag client was blocked: $client" }
+      sendFailureAndClose(ctx, msg)
+      return
+    }
+
+    scope.launch(context = dispatchers.io) { allowedClients.seen(client) }
+
+    val connectSocket =
+        tcpSocketCreator.connect(
+            hostName = dstAddr,
+            port = dstPort,
+            onChannelInitialized = { ch ->
+              val pipeline = ch.pipeline()
+
+              if (isDebug) {
+                pipeline.addFirst(LoggingHandler(LogLevel.DEBUG))
+              }
+
+              // Bandwidth limiter
+              pipeline.applyBandwidthLimitFor(client)
+
+              // Read from the REMOTE and send back to the PROXY
+              pipeline.addLast(relayHandlerFactory.create(Unit))
+            },
+        )
+
+    val outbound = connectSocket.channel()
+
+    // When this socket closes, close the outbound
+    serverChannel.closeFuture().addListener { outbound.flushAndClose() }
+    outbound.closeFuture().addListener { serverChannel.flushAndClose() }
+
+    RelayHandler.applyChannelAttributes(
+        channel = outbound,
+        writeBackChannel = serverChannel,
+        tag = "$tag-INBOUND-${dstAddr}:${dstPort}",
+        direction = RelayHandler.Direction.INBOUND,
+        client = client,
+    )
+
+    // Retain a copy through listener connection
+    val retained = ReferenceCountUtil.retain(msg)
+
+    // Release original message
+    ReferenceCountUtil.release(msg)
+
+    connectSocket.addListener { future ->
+      // The outbound channel is open, move back to the receive side context and adjust the
+      // pipeline.
+      ctx.executor().runInEventLoop {
+        try {
+          handleSocksConnectRelay(
+              ctx = ctx,
+              channelId = channelId,
+              tag = tag,
+              future = future,
+              dstAddr = dstAddr,
+              dstPort = dstPort,
+              retained = retained,
+              outbound = outbound,
+              serverChannel = serverChannel,
+              client = client,
+          )
+        } catch (@LintIgnoreTooGenericExceptionCaught e: Throwable) {
+          Timber.e(e) { "(${channelId}) Unable to execute SOCKS connect relay" }
+
+          // Just release, the ctx is dead
+          ReferenceCountUtil.release(retained)
+          outbound.flushAndClose()
+        }
+      }
+    }
+  }
+
+  private fun handleSocksConnectRelay(
+      ctx: ChannelHandlerContext,
+      channelId: String,
+      tag: String,
+      future: Future<in Void>,
+      dstAddr: String,
+      dstPort: Int,
+      retained: T,
+      outbound: Channel,
+      serverChannel: Channel,
+      client: TetherClient,
+  ) {
+    if (!future.isSuccess) {
+      Timber.e(future.cause()) { "$tag proxied outbound failed" }
+      sendFailureAndClose(ctx, retained)
+      return
+    }
+
+    RelayHandler.applyChannelAttributes(
+        channel = serverChannel,
+        writeBackChannel = outbound,
+        tag = "$tag-OUTBOUND-${dstAddr}:${dstPort}",
+        direction = RelayHandler.Direction.OUTBOUND,
+        client = client,
+    )
+
+    // Tell proxy we've established connection
+    // This will consume the retained message
+    publishConnectSuccess(ctx, tag, channelId, retained, outbound)
+
+    // Drop down to raw TCP
+    val pipeline = ctx.pipeline()
+
+    dropSocksHandlers(pipeline)
+
+    // Remove our own handler
+    pipeline.dropHandler(this::class)
+
+    // Add a relay for the internet outbound
+    pipeline.addLast(relayHandlerFactory.create(Unit))
+  }
+
+  @CheckResult protected abstract fun isConnectMessageType(msg: T): Boolean
+
+  protected abstract fun publishConnectSuccess(
+      ctx: ChannelHandlerContext,
+      tag: String,
+      channelId: String,
+      msg: T,
+      outbound: Channel,
+  )
+
+  protected abstract fun dropSocksHandlers(pipeline: ChannelPipeline)
+
+  protected abstract fun sendFailureAndClose(ctx: ChannelHandlerContext, msg: T)
+
+  companion object {
+
+    @JvmStatic
+    protected fun applyChannelAttributes(
+        channel: Channel,
+        client: TetherClient,
+    ) {
+      ProxyHandler.applyChannelAttributes(
+          channel = channel,
+          client = client,
+      )
+    }
+  }
+}
