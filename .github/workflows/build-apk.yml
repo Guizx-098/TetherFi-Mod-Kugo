@@ -34,6 +34,10 @@ jobs:
             ln -s android-37.0 "$SDK_ROOT/platforms/android-37"
           fi
 
+      - name: Criar local.properties para CI
+        run: |
+          printf 'sdk.dir=%s\\n' "$ANDROID_HOME" > local.properties
+
       - name: Compilar APK
         run: |
           chmod +x gradlew
