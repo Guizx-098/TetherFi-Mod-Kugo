@@ -23,10 +23,12 @@ jobs:
 
       - name: Configurar Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          packages: "platform-tools"
 
       - name: Instalar SDK necessário
         run: |
-          sdkmanager "platforms;android-37" "build-tools;37.0.0"
+          sdkmanager --install "platforms;android-37" "build-tools;37.0.0"
 
       - name: Compilar APK
         run: |
