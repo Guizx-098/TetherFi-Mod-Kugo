@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2026 pyamsoft
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at:
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources>
+  <string name="connection_last_seen">Visto por último: %1$s</string>
+  <string name="connection_options">Opções da conexão</string>
+  <string name="connection_total_to_internet">Total enviado: %1$s</string>
+  <string name="connection_total_from_internet">Total recebido: %1$s</string>
+  <string name="connection_excuse">Uma solução mais amigável está sendo estudada.</string>
+  <string name="connection_sorry">Desculpe de antemão. O sistema operacional não permite ver qual aparelho conectado é qual, então esta tela só permite gerenciar pelo endereço IP.</string>
+  <string name="connection_none">Nenhuma conexão ainda!</string>
+  <string name="connection_start_before_manage">Inicie o Hotspot para ver e gerenciar os aparelhos conectados.</string>
+  <string name="connection_running_explain">Por padrão, qualquer aparelho que se conectar tem permissão para acessar a Internet pelo Hotspot. Para bloquear um aparelho da rede, desligue a chave do endereço IP que você quer restringir.</string>
+  <string name="option_set_nickname">Definir apelido</string>
+  <string name="transfer_over_limit">LIMITE EXCEDIDO: %1$s</string>
+  <string name="transfer_limit">%1$s: %2$s</string>
+  <string name="option_set_transfer">Definir limite de transferência</string>
+  <string name="transfer_label">Limite de transferência</string>
+  <string name="option_set_bandwidth">Definir limite de banda</string>
+  <string name="bandwidth_label">Limite de taxa de banda</string>
+  <string name="bandwidth_limit">%1$s: %2$s/s</string>
+</resources>

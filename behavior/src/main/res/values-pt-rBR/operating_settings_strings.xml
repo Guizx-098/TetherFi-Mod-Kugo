@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2026 pyamsoft
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at:
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources>
+  <string name="operating_settings">Configurações de funcionamento</string>
+  <string name="operating_always_alive_title">Sempre ativo</string>
+  <string name="operating_always_alive_description">Permite que o Hotspot do %1$s continue funcionando mesmo com o app fechado.\n\nIsso melhora bastante a sua experiência e o desempenho da rede.\n(recomendado)</string>
+  <string name="permission_notification_title">Mostrar notificação do Hotspot</string>
+  <string name="permission_notification_description">Mantém o Hotspot ativo em versões mais novas do Android.\n\nSem uma notificação, o Hotspot pode ser encerrado aleatoriamente.</string>
+  <string name="operating_new_engine_title">Usar o novo mecanismo</string>
+  <string name="operating_new_engine_description">Faz o %1$s usar um novo mecanismo de proxy baseado em Netty para tratar as conexões. Este novo mecanismo é o padrão atual e será o único com suporte na próxima versão.</string>
+</resources>

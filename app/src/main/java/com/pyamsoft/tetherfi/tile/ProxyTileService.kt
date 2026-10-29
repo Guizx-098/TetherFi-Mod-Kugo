@@ -90,32 +90,32 @@ internal class ProxyTileService internal constructor() : TileService() {
     when (status) {
       is RunningStatus.Error -> {
         state = Tile.STATE_INACTIVE
-        title = "ERROR"
-        description = status.throwable.message ?: "An unexpected error occurred"
+        title = getString(R.string.proxy_tile_error)
+        description = status.throwable.message ?: getString(R.string.proxy_tile_error_unknown)
       }
 
       is RunningStatus.NotRunning -> {
         state = Tile.STATE_INACTIVE
         title = getString(R.string.app_name)
-        description = "Click to start Hotspot"
+        description = getString(R.string.proxy_tile_click_to_start)
       }
 
       is RunningStatus.Running -> {
         state = Tile.STATE_ACTIVE
         title = getString(R.string.app_name)
-        description = "Hotspot Running"
+        description = getString(R.string.proxy_tile_running)
       }
 
       is RunningStatus.Starting -> {
         state = Tile.STATE_INACTIVE
         title = getString(R.string.app_name)
-        description = "Starting..."
+        description = getString(R.string.proxy_tile_starting)
       }
 
       is RunningStatus.Stopping -> {
         state = Tile.STATE_ACTIVE
         title = getString(R.string.app_name)
-        description = "Stopping..."
+        description = getString(R.string.proxy_tile_stopping)
       }
     }
 

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2026 pyamsoft
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at:
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources>
+  <string name="turn_on_wi_fi">Ligue o Wi-Fi.</string>
+  <string name="wifi_must_be_on">Você não precisa se conectar a uma rede, mas o Wi-Fi precisa estar ligado para o %1$s funcionar.</string>
+  <string name="connect_internet">Conecte-se à Internet.</string>
+  <string name="connect_internet_options">Você pode se conectar por Wi-Fi ou dados móveis.</string>
+  <string name="optionally_configure_hotspot">Opcionalmente, você pode configurar o nome, a senha, a porta do proxy e a faixa de frequência da transmissão. Isso não é obrigatório, e os valores padrão funcionam bem para a maioria das pessoas.</string>
+  <string name="optionally_configure_power">Opcionalmente, você pode ignorar as otimizações de bateria do sistema Android, o que permite que o %1$s funcione com o máximo desempenho o tempo todo. Isso pode gastar mais bateria, mas melhora bastante a sua experiência de rede.</string>
+  <string name="start_the_hotspot">Inicie o Hotspot do %1$s.</string>
+  <string name="check_hotspot_green">Confirme que os status de Transmissão, Proxy e Hotspot estão todos em funcionamento.</string>
+  <string name="connect_usb_ethernet">Conecte um cabo USB ao seu aparelho</string>
+  <string name="usb_tethering_must_be_on">Você precisa ativar o tethering USB no seu aparelho. Você não precisa ter um plano de tethering, mas o aparelho precisa conseguir entrar no modo de tethering (também chamado de RNDIS) para o %1$s funcionar.</string>
+</resources>

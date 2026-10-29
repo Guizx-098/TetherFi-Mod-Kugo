@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2026 pyamsoft
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at:
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources>
+  <string name="faq_blurb">Tem dúvidas sobre como o %1$s funciona? Está com problemas para se conectar?\n\nConfira as nossas %2$s e os apps %3$s</string>
+  <string name="faqs">Perguntas frequentes</string>
+  <string name="known_to_not_work">sabidamente incompatíveis</string>
+  <string name="view_information">Ver informações</string>
+  <string name="something_went_wrong">Algo deu errado</string>
+  <string name="unknown_error">ERRO</string>
+  <string name="hotspot_speed_what">Lentidão no Hotspot</string>
+  <string name="hotspot_speed_sad">Está com %1$s?</string>
+  <string-array name="hotspot_speed_items">
+    <item>Ligue este aparelho na tomada e confirme que ele está carregando</item>
+    <item>Ative o ajuste \"Sempre ativo\" (desative a otimização de bateria)</item>
+    <item>Tente alternar a frequência da transmissão entre 2,4 GHz e 5 GHz</item>
+    <item>Reinicie este aparelho e o aparelho que está se conectando</item>
+    <item>Ative e desative o modo avião, o Wi-Fi e o Bluetooth várias vezes neste aparelho</item>
+    <item>Reduza a configuração avançada \"Tempo limite do socket\" para 10 ou até 3 segundos</item>
+  </string-array>
+  <string name="hotspot_speed_faq">Ainda com velocidade baixa?\nVeja a página da Wiki sobre como diagnosticar o %1$s</string>
+</resources>

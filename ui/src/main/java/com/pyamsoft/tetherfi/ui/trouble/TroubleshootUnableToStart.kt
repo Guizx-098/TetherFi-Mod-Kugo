@@ -148,15 +148,16 @@ fun TroubleshootUnableToStart(
       )
     }
 
+    val unexpectedError = stringResource(R.string.trouble_unexpected_error)
     throwable?.also { err ->
       val title =
-          remember(err) {
+          remember(err, unexpectedError) {
             // Special message handling for RNDIS initialization errors
             if (err is RNDISInitializeException) {
               return@remember err.candidateMessage
             }
 
-            return@remember err.message.orEmpty().ifBlank { "Unexpected Hotspot Error" }
+            return@remember err.message.orEmpty().ifBlank { unexpectedError }
           }
 
       Column(

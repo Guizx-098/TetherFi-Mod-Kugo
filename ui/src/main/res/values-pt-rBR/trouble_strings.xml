@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2026 pyamsoft
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at:
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources>
+  <string name="trouble_title">Falha ao iniciar o Hotspot do %1$s.</string>
+  <string name="trouble_description">Isto NÃO é um erro do app, é um erro %1$s.</string>
+  <string name="trouble_err_type_both">no seu aparelho e na sua configuração</string>
+  <string name="trouble_err_type_proxy">na sua configuração</string>
+  <string name="trouble_err_type_broadcast">no seu aparelho</string>
+  <string name="trouble_double_check">Verifique estes pontos e tente novamente:</string>
+  <string name="trouble_proxy_already_used">• A porta do Hotspot pode já estar em uso por outro app</string>
+  <string name="trouble_proxy_port">• A porta do Hotspot deve estar entre 1025 e 65000</string>
+  <string name="trouble_broadcast_wifi_on">• O Wi-Fi precisa estar LIGADO para iniciar o Hotspot</string>
+  <string name="trouble_broadcast_wifi_restart">• Reinicie o Wi-Fi desligando-o e ligando-o novamente</string>
+  <string name="trouble_broadcast_password_length">• A senha do Hotspot deve ter pelo menos 8 caracteres</string>
+  <string name="trouble_location_service">• Os serviços de Localização precisam estar LIGADOS</string>
+  <string name="trouble_connect_rndis">• O aparelho precisa estar conectado fisicamente por um cabo USB de dados</string>
+  <string name="trouble_broadcast_rndis">• O tethering USB precisa estar LIGADO</string>
+  <string name="trouble_click_expand">Toque para expandir o rastreamento do erro</string>
+  <string name="trouble_unexpected_error">Erro inesperado no Hotspot</string>
+</resources>

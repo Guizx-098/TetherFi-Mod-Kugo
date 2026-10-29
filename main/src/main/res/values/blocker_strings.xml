@@ -55,4 +55,8 @@
   <string
     name="block_background_data_description"
   >%1$s has trouble starting the hotspot Background Data usage permission is restricted. Please allow Background Data, or alternatively you can enable the \"%2$s\" tweak to test if this requirement is not needed for your device.</string>
+  <string name="error_broadcast_initialization_title">Broadcast Initialization Error</string>
+  <string name="error_proxy_initialization_title">Proxy Initialization Error</string>
+  <string name="error_hotspot_initialization_title">Hotspot Initialization Error</string>
+  <string name="error_network_initialization_title">Network Initialization Error</string>
 </resources>

@@ -33,9 +33,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.pyamsoft.pydroid.core.LintIgnoreTooManyFunctions
 import com.pyamsoft.pydroid.ui.util.rememberAsStateList
+import com.pyamsoft.tetherfi.R
 import com.pyamsoft.tetherfi.server.broadcast.BroadcastNetworkStatus
 import com.pyamsoft.tetherfi.server.broadcast.BroadcastType
 import com.pyamsoft.tetherfi.server.network.PreferredNetwork
@@ -80,11 +82,12 @@ fun MainScreen(
 ) {
   val (snackbarError, setSnackbarError) = remember { mutableStateOf<ServerPortTypes?>(null) }
   val snackbarHostState = remember { SnackbarHostState() }
+  val snackbarMessage = stringResource(R.string.snackbar_enable_one_proxy_type)
 
-  LaunchedEffect(snackbarError, snackbarHostState, setSnackbarError) {
+  LaunchedEffect(snackbarError, snackbarHostState, setSnackbarError, snackbarMessage) {
     if (snackbarError != null) {
       snackbarHostState.showSnackbar(
-          message = "You must enable at least one proxy type.",
+          message = snackbarMessage,
           duration = SnackbarDuration.Short,
       )
 

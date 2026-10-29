@@ -22,6 +22,7 @@ import com.pyamsoft.tetherfi.core.notification.NotificationErrorLauncher
 import com.pyamsoft.tetherfi.server.broadcast.BroadcastEvent
 import com.pyamsoft.tetherfi.server.broadcast.BroadcastNetworkUpdater
 import com.pyamsoft.tetherfi.server.broadcast.BroadcastObserver
+import com.pyamsoft.tetherfi.server.clients.ClientPresenceRefresher
 import com.pyamsoft.tetherfi.service.foreground.ForegroundLauncher
 import com.pyamsoft.tetherfi.service.foreground.ForegroundWatcher
 import com.pyamsoft.tetherfi.service.notification.NotificationLauncher
@@ -45,6 +46,7 @@ internal constructor(
     private val foregroundLauncher: ForegroundLauncher,
     private val serviceLauncher: ServiceLauncher,
     private val networkUpdater: BroadcastNetworkUpdater,
+    private val clientPresence: ClientPresenceRefresher,
     private val dispatchers: AppDispatchers,
 ) {
   private val runningState = MutableStateFlow(false)
@@ -61,14 +63,18 @@ internal constructor(
           when (event) {
             is BroadcastEvent.ConnectionChanged -> {
               networkUpdater.updateNetworkInfo()
+              // A device may have joined or left the Wi-Fi group, verify the connected list now
+              clientPresence.requestPresenceCheck()
             }
 
             is BroadcastEvent.RequestPeers -> {
               networkUpdater.updateNetworkInfo()
+              clientPresence.requestPresenceCheck()
             }
 
             is BroadcastEvent.Other -> {
               networkUpdater.updateNetworkInfo()
+              clientPresence.requestPresenceCheck()
             }
           }
         }

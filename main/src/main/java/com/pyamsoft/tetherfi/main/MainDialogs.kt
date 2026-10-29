@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.core.LintIgnoreTooManyFunctions
@@ -155,7 +156,7 @@ fun MainDialogs(
     AnimatedVisibility(visible = isShowingBroadcastError) {
       ServerErrorDialog(
           modifier = dialogModifier,
-          title = "Broadcast Initialization Error",
+          title = stringResource(R.string.error_broadcast_initialization_title),
           error = err.throwable,
           onDismiss = onHideBroadcastError,
       )
@@ -166,7 +167,7 @@ fun MainDialogs(
     AnimatedVisibility(visible = isShowingProxyError) {
       ServerErrorDialog(
           modifier = dialogModifier,
-          title = "Proxy Initialization Error",
+          title = stringResource(R.string.error_proxy_initialization_title),
           error = err.throwable,
           onDismiss = onHideProxyError,
       )
@@ -263,7 +264,7 @@ private fun GroupErrorDialog(
     AnimatedVisibility(visible = show) {
       ServerErrorDialog(
           modifier = modifier,
-          title = "Hotspot Initialization Error",
+          title = stringResource(R.string.error_hotspot_initialization_title),
           error = groupError,
           onDismiss = onDismiss,
       )
@@ -300,7 +301,7 @@ private fun ConnectionErrorDialog(
     AnimatedVisibility(visible = show) {
       ServerErrorDialog(
           modifier = modifier,
-          title = "Network Initialization Error",
+          title = stringResource(R.string.error_network_initialization_title),
           error = connectionError,
           onDismiss = onDismiss,
       )

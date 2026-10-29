@@ -134,7 +134,7 @@ private fun AttemptRefreshButton(
       Icon(
           modifier = Modifier.graphicsLayer { rotationZ = if (fakeSpin) angle else 0F },
           painter = IconPainters.refresh(),
-          contentDescription = "Refresh",
+          contentDescription = stringResource(R.string.tile_refresh_hotspot),
           tint = MaterialTheme.colorScheme.primary,
       )
     }

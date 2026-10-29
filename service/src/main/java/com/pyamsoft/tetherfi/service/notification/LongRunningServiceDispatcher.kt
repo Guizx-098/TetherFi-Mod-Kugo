@@ -111,36 +111,45 @@ internal constructor(
           .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
           .addAction(
               R.drawable.ic_wifi_tethering_off_24,
-              "Stop $appName Hotspot",
+              context.getString(R.string.notification_stop_hotspot, appName),
               getServiceStopPendingIntent(),
           )
-          .setContentTitle("$appName Running")
+          .setContentTitle(context.getString(R.string.notification_title_running, appName))
           .setContentText(resolveContentText(appName, notification))
 
   @CheckResult
   private fun resolveContentText(appName: String, notification: ServerNotificationData): String {
-    val openAppMessage = "Please open $appName and restart the Hotspot."
+    val openAppMessage = context.getString(R.string.notification_open_app, appName)
     return when (notification.broadcastStatus) {
-      is RunningStatus.Error -> "Hotspot Broadcast Error. $openAppMessage"
-      is RunningStatus.NotRunning -> "Hotspot Broadcast preparing..."
-      is RunningStatus.Starting -> "Hotspot Broadcast starting..."
-      is RunningStatus.Stopping -> "Hotspot Broadcast stopping..."
+      is RunningStatus.Error ->
+          context.getString(R.string.notification_broadcast_error, openAppMessage)
+      is RunningStatus.NotRunning -> context.getString(R.string.notification_broadcast_preparing)
+      is RunningStatus.Starting -> context.getString(R.string.notification_broadcast_starting)
+      is RunningStatus.Stopping -> context.getString(R.string.notification_broadcast_stopping)
       is RunningStatus.Running -> {
         // WiFi direct group must be available
         when (notification.group) {
-          is BroadcastNetworkStatus.GroupInfo.Unchanged -> "Hotspot preparing..."
-          is BroadcastNetworkStatus.GroupInfo.Empty -> "Hotspot Group Unavailable. $openAppMessage"
-          is BroadcastNetworkStatus.GroupInfo.Error -> "Hotspot Group Error. $openAppMessage"
+          is BroadcastNetworkStatus.GroupInfo.Unchanged ->
+              context.getString(R.string.notification_hotspot_preparing)
+          is BroadcastNetworkStatus.GroupInfo.Empty ->
+              context.getString(R.string.notification_group_unavailable, openAppMessage)
+          is BroadcastNetworkStatus.GroupInfo.Error ->
+              context.getString(R.string.notification_group_error, openAppMessage)
           is BroadcastNetworkStatus.GroupInfo.Connected -> {
             // Wi-Fi direction connection info must be available
             when (notification.connection) {
-              is BroadcastNetworkStatus.ConnectionInfo.Unchanged -> "Hotspot preparing..."
+              is BroadcastNetworkStatus.ConnectionInfo.Unchanged ->
+                  context.getString(R.string.notification_hotspot_preparing)
               is BroadcastNetworkStatus.ConnectionInfo.Empty ->
-                  "Hotspot Connection Unavailable. $openAppMessage"
+                  context.getString(R.string.notification_connection_unavailable, openAppMessage)
               is BroadcastNetworkStatus.ConnectionInfo.Error ->
-                  "Hotspot Connection Error. $openAppMessage"
+                  context.getString(R.string.notification_connection_error, openAppMessage)
               is BroadcastNetworkStatus.ConnectionInfo.Connected -> {
-                "Hotspot Ready. ${notification.clientCount} Clients. ${notification.blockCount} Blocked."
+                context.getString(
+                    R.string.notification_hotspot_ready,
+                    notification.clientCount,
+                    notification.blockCount,
+                )
               }
             }
           }

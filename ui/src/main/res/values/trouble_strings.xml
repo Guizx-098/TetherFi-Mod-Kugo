@@ -58,4 +58,5 @@
 
   <!-- TODO(Peter): Need zh-rTW translation -->
   <string name="trouble_click_expand">Click to expand Error trace</string>
+  <string name="trouble_unexpected_error">Unexpected Hotspot Error</string>
 </resources>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2026 pyamsoft
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at:
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources>
+  <string name="broadcast_frequency">Frequência da transmissão</string>
+  <string name="network_bands_system_defined">A frequência de transmissão da rede é definida pelo sistema e não pode ser alterada.</string>
+  <string name="network_bands_legacy_title">2,4 GHz</string>
+  <string name="network_bands_legacy_description">Mais lenta, mas compatível com todos os aparelhos.</string>
+  <string name="network_bands_modern_title">5 GHz</string>
+  <string name="network_bands_modern_description">Mais rápida, mas não compatível com todos os aparelhos.</string>
+  <string name="network_bands_modern_6_title">6 GHz</string>
+  <string name="network_bands_modern_6_description">Mais rápida, mas não compatível com todos os aparelhos. (Wi-Fi 6)</string>
+</resources>

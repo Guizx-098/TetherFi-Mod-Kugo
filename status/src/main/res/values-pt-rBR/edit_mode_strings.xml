@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2026 pyamsoft
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at:
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources>
+  <string name="editmode_system_defined">DEFINIDO PELO SISTEMA: NÃO PODE SER ALTERADO</string>
+  <string name="editmode_type_ssid">SSID</string>
+  <string name="editmode_label_map">%1$s: %2$s</string>
+  <string name="editmode_label_valid">Válido</string>
+  <string name="editmode_label_invalid">Inválido</string>
+  <string name="editmode_label_visible">Visível</string>
+  <string name="editmode_label_hidden">Oculto</string>
+  <string name="editmode_hotspot_password">SENHA DO HOTSPOT</string>
+  <string name="editmode_hotspot_name">NOME DO HOTSPOT</string>
+  <string name="editmode_hotspot_proxy_mode_title">Modo de proxy</string>
+  <string name="editmode_hotspot_proxy_http_title">Proxy HTTP/HTTPS</string>
+  <string name="editmode_hotspot_proxy_http_description">Este modo de proxy é simples e rápido. É compatível com a maioria das páginas da web, mas não com todos os serviços online, como jogos, chats ou streaming de vídeo. A maioria dos usuários vai querer usar esta opção (recomendado).</string>
+  <string name="editmode_hotspot_proxy_socks_title">Proxy SOCKS4A/SOCKS5H</string>
+  <string name="editmode_hotspot_proxy_socks_description">Este modo de proxy é mais lento e destinado apenas a usuários muito técnicos e casos de uso específicos. Ele oferece suporte a SOCKS4A e SOCKS5 (CONNECT e UDP-ASSOCIATE). A maioria dos usuários não vai precisar desta opção.</string>
+</resources>

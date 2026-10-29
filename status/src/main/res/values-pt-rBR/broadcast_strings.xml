@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2026 pyamsoft
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at:
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources>
+  <string name="expert_broadcast_title">Tipo de Hotspot</string>
+  <string name="expert_broadcast_description">Muda a forma como o %1$s cria a conexão do Hotspot</string>
+  <string name="expert_broadcast_type_wifi_direct_title">Wi-Fi Direct</string>
+  <string name="expert_broadcast_type_wifi_direct_description">Usa o Wi-Fi Direct para criar um hotspot móvel ao qual vários aparelhos podem se conectar.\n\nIsso depende da capacidade do seu aparelho de usar o Wi-Fi Direct com sucesso, o que pode não ser possível em todos os aparelhos.</string>
+  <string name="expert_broadcast_type_rndis_title">Tethering USB</string>
+  <string name="expert_broadcast_type_rndis_description">Usa o tethering USB (RNDIS) para criar uma conexão para um único aparelho por cabo USB.\n\nIsso depende da capacidade do seu aparelho de usar o tethering USB com sucesso, o que pode não ser possível em todos os aparelhos.</string>
+  <string name="expert_preferred_network_title">Rede preferida</string>
+  <string name="expert_preferred_network_description">Muda qual tipo de conexão o %1$s usa para a comunicação do Hotspot</string>
+  <string name="expert_preferred_network_none_title">Rede ativa</string>
+  <string name="expert_preferred_network_none_description">As conexões com o Hotspot passarão pela conexão ativa do aparelho.</string>
+  <string name="expert_preferred_network_wifi_title">Wi-Fi</string>
+  <string name="expert_preferred_network_wifi_description">As conexões com o Hotspot passarão pela conexão Wi-Fi, se disponível.</string>
+  <string name="expert_preferred_network_cellular_title">Dados móveis</string>
+  <string name="expert_preferred_network_cellular_description">As conexões com o Hotspot passarão pela conexão de dados móveis, se disponível.</string>
+</resources>

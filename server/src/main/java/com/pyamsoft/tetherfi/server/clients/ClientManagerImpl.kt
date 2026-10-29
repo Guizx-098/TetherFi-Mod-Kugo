@@ -37,8 +37,14 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.toJavaDuration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,6 +54,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 
 @Singleton
 internal class ClientManagerImpl
@@ -58,6 +65,7 @@ internal constructor(
     private val shutdownBus: EventBus<ServerShutdownEvent>,
     private val tweakPreferences: TweakPreferences,
     private val nickNamePreferences: NickNamePreferences,
+    private val clientProbe: ClientProbe,
     private val dispatchers: AppDispatchers,
 ) :
     BlockedClientTracker,
@@ -66,6 +74,7 @@ internal constructor(
     ClientEraser,
     StartedClients,
     ClientResolver,
+    ClientPresenceRefresher,
     ClientEditor {
 
   private val blockedClients = MutableStateFlow<Map<String, TetherClient>>(emptyMap())
@@ -76,6 +85,18 @@ internal constructor(
   private val savedNickNames = MutableStateFlow<Map<String, String>>(emptyMap())
 
   private val jobs: MutableSet<Job> = ConcurrentHashMap.newKeySet()
+
+  // Presence tracking. This is only bookkeeping for "is this device still on the network" and is
+  // never persisted. Saved nicknames live in savedNickNames and are not touched by any of this.
+  //
+  // The last time a probe confirmed that a client answered
+  private val reachableAt = ConcurrentHashMap<String, LocalDateTime>()
+
+  // How many checks in a row a client has failed to answer
+  private val probeFailures = ConcurrentHashMap<String, Int>()
+
+  // Conflated: any number of "please check now" requests collapse into one pending check
+  private val presenceRequests = Channel<Unit>(Channel.CONFLATED)
 
   @CheckResult
   private fun markLastSeenNow(client: TetherClient): TetherClient =
@@ -134,6 +155,12 @@ internal constructor(
           return@filter true
         }
 
+        // A client that still answers our probes is still connected, even if it is idle
+        val stillReachable = reachableAt[client.key()]?.let { it >= cutoffTime } == true
+        if (stillReachable) {
+          return@filter true
+        }
+
         val newEnough = client.mostRecentlySeen >= cutoffTime
         if (!newEnough) {
           Timber.d { "Client is too old: $client. Last seen ${client.mostRecentlySeen}" }
@@ -166,6 +193,113 @@ internal constructor(
           onTimerElapsed(OLD_CLIENT_TIMER_PERIOD) { purgeOldClients(it) }
         }
     )
+  }
+
+  private fun CoroutineScope.watchForDisconnectedClients() {
+    val scope = this
+
+    jobs.add(
+        scope.launch(context = dispatchers.default) {
+          Timber.d { "Watch for clients that have left the network" }
+          try {
+            while (true) {
+              val suspicious = checkPresence()
+
+              // Look again quickly while we are unsure about someone, otherwise relax.
+              // The wait is cut short as soon as the Wi-Fi group reports that something changed.
+              val wait = if (suspicious) PRESENCE_RECHECK_PERIOD else PRESENCE_CHECK_PERIOD
+              withTimeoutOrNull(wait) { presenceRequests.receive() }
+            }
+          } finally {
+            Timber.d { "Stopped watching for clients that have left the network" }
+          }
+        }
+    )
+  }
+
+  /**
+   * Verify every listed client is still on the network, and remove the ones that are gone.
+   *
+   * A client is removed only when ALL of these are true:
+   * - It failed [PRESENCE_MAX_FAILURES] checks in a row, and
+   * - It has not sent any proxy traffic within [PRESENCE_TRAFFIC_GRACE]
+   *
+   * Removing a client only removes it from the live list. Its saved nickname, and any block, are
+   * kept so that they are applied again when the device returns.
+   *
+   * @return TRUE if some client is currently under suspicion and should be re-checked soon
+   */
+  @VisibleForTesting
+  internal suspend fun checkPresence(): Boolean {
+    val snapshot = allowedClients.value.values.toList()
+    if (snapshot.isEmpty()) {
+      return false
+    }
+
+    val results =
+        coroutineScope {
+          snapshot
+              .map { client ->
+                async {
+                  val key = client.key()
+                  return@async key to clientProbe.isReachable(key)
+                }
+              }
+              .awaitAll()
+        }
+
+    val now = LocalDateTime.now(clock)
+    val trafficCutoff = now.minus(PRESENCE_TRAFFIC_GRACE.toJavaDuration())
+    val gone = mutableSetOf<String>()
+    var suspicious = false
+
+    for ((key, reachable) in results) {
+      // Use the freshest data, the client may have been updated or removed while we probed
+      val current = allowedClients.value[key] ?: continue
+
+      if (reachable) {
+        reachableAt[key] = now
+        probeFailures.remove(key)
+      } else if (current.mostRecentlySeen >= trafficCutoff) {
+        // It is unreachable by ping but is actively using the proxy: it is clearly connected.
+        // Some devices simply do not answer pings.
+        probeFailures.remove(key)
+      } else {
+        val failures = (probeFailures[key] ?: 0) + 1
+        probeFailures[key] = failures
+        if (failures >= PRESENCE_MAX_FAILURES) {
+          gone.add(key)
+        } else {
+          suspicious = true
+        }
+      }
+    }
+
+    if (gone.isNotEmpty()) {
+      var removed: Set<String> = emptySet()
+      allowedClients.update { clients ->
+        // Never remove someone who sent traffic while we were checking
+        val toRemove =
+            gone.filterTo(mutableSetOf()) { key ->
+              val client = clients[key]
+              client != null && client.mostRecentlySeen < trafficCutoff
+            }
+        removed = toRemove
+        return@update clients.filterKeys { it !in toRemove }
+      }
+
+      removed.forEach { key ->
+        Timber.d { "Client left the network, remove from list: $key" }
+        reachableAt.remove(key)
+        probeFailures.remove(key)
+      }
+    }
+
+    return suspicious
+  }
+
+  override fun requestPresenceCheck() {
+    presenceRequests.trySend(Unit)
   }
 
   @CheckResult
@@ -268,6 +402,7 @@ internal constructor(
       withContext(context = dispatchers.default) {
         loadSavedNickNames()
         watchForOldClients()
+        watchForDisconnectedClients()
         watchForNoClients()
       }
 
@@ -348,6 +483,8 @@ internal constructor(
 
     allowedClients.value = emptyMap()
     blockedClients.value = emptyMap()
+    reachableAt.clear()
+    probeFailures.clear()
     jobs.forEach { it.cancel() }
     jobs.clear()
   }
@@ -391,5 +528,17 @@ internal constructor(
 
     /** Shut down the hotspot after 10 minutes of absolutely zero client activity */
     private val NO_CLIENTS_TIMER_PERIOD = 10.minutes
+
+    /** How often we verify that listed clients are still on the network */
+    private val PRESENCE_CHECK_PERIOD = 8.seconds
+
+    /** How often we verify while some client failed its last check and may have just left */
+    private val PRESENCE_RECHECK_PERIOD = 2.seconds
+
+    /** A client must fail this many checks in a row before it is removed from the list */
+    private const val PRESENCE_MAX_FAILURES = 3
+
+    /** A client that used the proxy this recently is clearly connected, whatever the probe says */
+    private val PRESENCE_TRAFFIC_GRACE = 20.seconds
   }
 }

@@ -32,6 +32,7 @@ import kotlin.test.assertSame
 import kotlin.test.assertTrue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -89,12 +90,20 @@ private class FakeTweakPreferences : TweakPreferences {
   override fun setWakeLock(wakelock: Boolean) = Unit
 }
 
+/** A probe whose answers the test controls. Anything not listed is reachable. */
+private class FakeClientProbe : ClientProbe {
+  val unreachable = mutableSetOf<String>()
+
+  override suspend fun isReachable(hostNameOrIp: String): Boolean = hostNameOrIp !in unreachable
+}
+
 private fun newManager(
     clock: Clock,
     dispatchers: AppDispatchers,
     inAppRatingPreferences: InAppRatingPreferences = FakeInAppRatingPreferences(),
     tweakPreferences: TweakPreferences = FakeTweakPreferences(),
     nickNamePreferences: NickNamePreferences = FakeNickNamePreferences(),
+    clientProbe: ClientProbe = FakeClientProbe(),
 ): ClientManagerImpl =
     ClientManagerImpl(
         inAppRatingPreferences = inAppRatingPreferences,
@@ -103,6 +112,7 @@ private fun newManager(
         dispatchers = dispatchers,
         tweakPreferences = tweakPreferences,
         nickNamePreferences = nickNamePreferences,
+        clientProbe = clientProbe,
     )
 
 class FakeNickNamePreferences(initial: Map<String, String> = emptyMap()) : NickNamePreferences {
@@ -408,5 +418,128 @@ class ClientManagerImplTest {
 
     assertEquals(0, manager.listenForClients().first().size)
     assertEquals(0, manager.listenForBlocked().first().size)
+  }
+
+  @Test
+  fun `client that left the network is removed from the list but keeps its nickname`() = runTest {
+    val clock = MutableClock(Instant.EPOCH)
+    val probe = FakeClientProbe()
+    val prefs = FakeNickNamePreferences()
+    val manager =
+        newManager(
+            clock = clock,
+            dispatchers = AppDispatchers.create(),
+            nickNamePreferences = prefs,
+            clientProbe = probe,
+        )
+    manager.loadSavedNickNames()
+
+    val client = manager.ensure("192.168.49.20")
+    manager.updateNickName(client, "Vitor")
+    manager.ensure("192.168.49.21")
+
+    // Everyone answers, nothing changes
+    assertFalse(manager.checkPresence())
+    assertEquals(2, manager.listenForClients().first().size)
+
+    // The first device leaves, but it just used the proxy so it is not removed yet
+    probe.unreachable.add("192.168.49.20")
+    assertFalse(manager.checkPresence())
+    assertEquals(2, manager.listenForClients().first().size)
+
+    // After the traffic grace period it must fail several checks in a row before it is removed
+    clock.advance(1.minutes)
+    assertTrue(manager.checkPresence())
+    assertTrue(manager.checkPresence())
+    assertEquals(2, manager.listenForClients().first().size)
+    assertFalse(manager.checkPresence())
+
+    val remaining = manager.listenForClients().first()
+    assertEquals(listOf("192.168.49.21"), remaining.map { it.key() })
+
+    // The saved nickname was not erased...
+    assertEquals("Vitor", prefs.store["192.168.49.20"])
+
+    // ...and is restored automatically when the device comes back
+    probe.unreachable.clear()
+    assertEquals("Vitor", manager.ensure("192.168.49.20").nickName)
+    assertEquals(2, manager.listenForClients().first().size)
+  }
+
+  @Test
+  fun `one missed check does not remove a client`() = runTest {
+    val clock = MutableClock(Instant.EPOCH)
+    val probe = FakeClientProbe()
+    val manager =
+        newManager(clock = clock, dispatchers = AppDispatchers.create(), clientProbe = probe)
+    manager.ensure("192.168.49.20")
+    clock.advance(1.minutes)
+
+    probe.unreachable.add("192.168.49.20")
+    assertTrue(manager.checkPresence())
+    assertTrue(manager.checkPresence())
+
+    // It answers again, so the failure count starts over
+    probe.unreachable.clear()
+    assertFalse(manager.checkPresence())
+    probe.unreachable.add("192.168.49.20")
+    assertTrue(manager.checkPresence())
+    assertTrue(manager.checkPresence())
+
+    assertEquals(1, manager.listenForClients().first().size)
+  }
+
+  @Test
+  fun `client using the proxy is never removed even if it does not answer pings`() = runTest {
+    val clock = MutableClock(Instant.EPOCH)
+    val probe = FakeClientProbe()
+    val manager =
+        newManager(clock = clock, dispatchers = AppDispatchers.create(), clientProbe = probe)
+    val client = manager.ensure("192.168.49.20")
+    probe.unreachable.add("192.168.49.20")
+
+    repeat(10) {
+      clock.advance(10.seconds)
+      manager.seen(client)
+      manager.checkPresence()
+    }
+
+    assertEquals(1, manager.listenForClients().first().size)
+  }
+
+  @Test
+  fun `a device that is gone is not shown again until it reconnects`() = runTest {
+    val clock = MutableClock(Instant.EPOCH)
+    val probe = FakeClientProbe()
+    val manager =
+        newManager(clock = clock, dispatchers = AppDispatchers.create(), clientProbe = probe)
+    manager.ensure("192.168.49.20")
+    clock.advance(1.minutes)
+    probe.unreachable.add("192.168.49.20")
+    repeat(3) { manager.checkPresence() }
+    assertTrue(manager.listenForClients().first().isEmpty())
+
+    // Checking an empty list is harmless and does not bring anyone back
+    assertFalse(manager.checkPresence())
+    assertTrue(manager.listenForClients().first().isEmpty())
+
+    // Reconnect: exactly one entry, no duplicates
+    manager.ensure("192.168.49.20")
+    manager.ensure("192.168.49.20")
+    assertEquals(1, manager.listenForClients().first().size)
+  }
+
+  @Test
+  fun `idle client that still answers survives the old purge`() = runTest {
+    val clock = MutableClock(Instant.EPOCH)
+    val manager = newManager(clock = clock, dispatchers = AppDispatchers.create())
+    manager.ensure("192.168.49.20")
+
+    clock.advance(10.minutes)
+    // The client is idle but answers probes
+    assertFalse(manager.checkPresence())
+    manager.purgeOldClients(clock.nowLocalDateTime().minusMinutes(5))
+
+    assertEquals(1, manager.listenForClients().first().size)
   }
 }

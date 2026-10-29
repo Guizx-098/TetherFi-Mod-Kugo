@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2026 pyamsoft
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at:
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources>
+  <string name="expert_title">Configurações avançadas</string>
+  <string name="expert_description">Isto é para usuários avançados.\n\nAjustar estas opções pode mudar completamente o desempenho do %1$s. Prossiga por sua conta e risco. A maioria dos usuários NÃO precisa alterar estas configurações.</string>
+  <string name="expert_socket_timeout_title">Tempo limite do socket</string>
+  <string name="expert_socket_timeout_description">Isto é para usuários avançados.\n\nVocê pode ajustar o tempo limite, que controla por quanto tempo o %1$s espera por uma conexão antes de fechar um socket. Para a maioria dos sites modernos e bem comportados, em uma conexão razoável, o valor padrão é suficiente. Se você notar muitos erros de tempo esgotado nas conexões, tente aumentar este valor. Se notar latência alta, tente diminuí-lo.</string>
+  <string name="expert_socket_timeout_button">Ajustar tempo limite do socket</string>
+  <string name="expert_timeout_yolo_title">Sem tempo limite</string>
+  <string name="expert_timeout_yolo_description">Nunca fecha as conexões até que o próprio site as feche. Ignora as preocupações com uso de memória e latência na tentativa de fazer os sites funcionarem. Se houver muitas conexões, pode aumentar muito a latência e o uso de memória.</string>
+  <string name="expert_timeout_toofast_title">3 segundos</string>
+  <string name="expert_timeout_toofast_description">Quase não espera. Em uma conexão rápida, a maioria dos sites bem comportados ainda deve funcionar. Limpa as conexões de forma agressiva, reduzindo o uso de memória e a latência, com o risco de interromper conexões.</string>
+  <string name="expert_timeout_fast_title">10 segundos</string>
+  <string name="expert_timeout_fast_description">Tempo limite um pouco mais curto, que deve funcionar com a maioria dos sites bem comportados. Uso de memória um pouco menor e pouca latência se houver muitas conexões.</string>
+  <string name="expert_timeout_balance_title">30 segundos</string>
+  <string name="expert_timeout_balance_description">A configuração mais equilibrada, que deve funcionar com a maioria dos sites bem comportados. Uso normal de memória e pouca latência se houver muitas conexões.</string>
+  <string name="expert_timeout_conservative_title">1 minuto</string>
+  <string name="expert_timeout_conservative_description">Espera mais tempo, o que permite que sites lentos ou mal comportados ainda funcionem. Uso de memória e latência um pouco maiores se houver muitas conexões.</string>
+  <string name="expert_timeout_longwait_title">5 minutos</string>
+  <string name="expert_timeout_longwait_description">Quase todos os sites devem funcionar. Se houver muitas conexões, pode aumentar muito a latência e o uso de memória.</string>
+</resources>

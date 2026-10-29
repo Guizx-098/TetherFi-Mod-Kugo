@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2026 pyamsoft
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at:
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources>
+  <string name="tweaks_title">Ajustes de comportamento</string>
+  <string name="tweaks_description">Os ajustes mudam o desempenho do %1$s de várias maneiras.\n\nTodas estas opções são totalmente opcionais e não afetam o desempenho da rede nem do Hotspot de forma alguma.</string>
+  <string name="ignore_vpn_description">Ao iniciar, o %1$s às vezes tem problemas se uma VPN estiver ativa e se recusa a iniciar o Hotspot até que ela seja desligada.\n\nSe você SABE que o seu app de VPN funciona bem com o %1$s, ative esta opção para evitar o diálogo de bloqueio.</string>
+  <string name="shutdown_no_client_title">Parar o Hotspot sem aparelhos conectados</string>
+  <string name="shutdown_no_client_description">Se o Hotspot do %1$s ficar 10 minutos em funcionamento sem atender nenhum aparelho, ele será desligado.\n\nDesligar o Hotspot automaticamente quando ele não está em uso pode economizar bateria.</string>
+  <string name="keep_screen_on_title">Manter a tela ligada</string>
+  <string name="keep_screen_on_description">Mantém a tela ligada enquanto o Hotspot estiver em funcionamento. Quando o Hotspot for parado, a tela poderá se apagar novamente. Este ajuste não é compatível com todos os aparelhos. Se \"Usar wakelock\" não funcionar, tente este ajuste ou ative \"Sempre ativo\".</string>
+  <string name="ignore_location_description">Para usar o Wi-Fi Direct, o %1$s pode exigir que a Localização esteja ligada. Porém, nem todo aparelho precisa da Localização ligada para usar o Wi-Fi Direct.\n\nSe você SABE que o seu aparelho NÃO precisa da Localização para usar o Wi-Fi Direct, ative esta opção para evitar o diálogo de bloqueio.\n\nA permissão de Localização/Dispositivos por perto ainda será necessária para o Wi-Fi Direct.</string>
+  <string name="hold_wakelock_title">Usar wakelock</string>
+  <string name="hold_wakelock_description">Usar um wakelock mantém a CPU ligada e o processamento rápido, mas consome mais bateria. Em aparelhos com economia de energia restritiva, isso pode não funcionar; tente o ajuste \"Manter a tela ligada\" ou ative \"Sempre ativo\".</string>
+</resources>

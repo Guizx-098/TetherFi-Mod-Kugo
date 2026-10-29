@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2026 pyamsoft
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at:
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources>
+  <string name="block_privacy_policy">Política de Privacidade</string>
+  <string name="block_view_privacy_policy">Ver a %2$s do %1$s</string>
+  <string name="block_vpn_title">VPN em conflito</string>
+  <string name="block_vpn_description">O %1$s tem problemas para iniciar o Hotspot quando uma VPN está conectada.</string>
+  <string name="block_vpn_instruction">Desconecte-se da VPN e tente iniciar o Hotspot novamente. Como alternativa, você pode ativar o ajuste \"%1$s\" para testar se a sua VPN funciona com o %2$s.</string>
+  <string name="block_location_title">Localização necessária</string>
+  <string name="block_location_description">O %1$s tem problemas para iniciar o Hotspot quando os serviços de Localização estão desligados. Mesmo concedendo a permissão de Localização, o serviço precisa estar ligado para tudo funcionar.</string>
+  <string name="block_location_instruction">Ative a Localização no seu aparelho e tente iniciar o Hotspot novamente. Como alternativa, você pode ativar o ajuste \"%1$s\" para testar se o %2$s funciona no seu aparelho sem precisar da Localização ligada.</string>
+  <string name="block_location_open_settings">Ativar serviços de Localização</string>
+  <string name="block_permission_title">Solicitação de permissão</string>
+  <string name="block_permission_description">O %1$s precisa da permissão de %2$s para criar um grupo Wi-Fi</string>
+  <string name="block_permission_reassure">O %1$s não usará estas permissões para nada além da criação do grupo Wi-Fi.</string>
+  <string name="block_permission_open_settings">Abrir configurações</string>
+  <string name="block_permission_deny">Negar</string>
+  <string name="block_permission_grant">Permitir</string>
+  <string name="block_permission_type_location">LOCALIZAÇÃO PRECISA</string>
+  <string name="block_permission_type_nearby">DISPOSITIVOS WI-FI POR PERTO</string>
+  <string name="block_permission_type_local_network">REDE LOCAL</string>
+  <string name="block_background_data_open_settings">Abrir configurações</string>
+  <string name="block_background_data_title">Dados em segundo plano necessários</string>
+  <string name="block_background_data_description">O %1$s tem problemas para iniciar o Hotspot porque o uso de dados em segundo plano está restrito. Permita os dados em segundo plano ou, como alternativa, ative o ajuste \"%2$s\" para testar se o seu aparelho dispensa esse requisito.</string>
+  <string name="error_broadcast_initialization_title">Erro ao iniciar a transmissão</string>
+  <string name="error_proxy_initialization_title">Erro ao iniciar o proxy</string>
+  <string name="error_hotspot_initialization_title">Erro ao iniciar o Hotspot</string>
+  <string name="error_network_initialization_title">Erro ao iniciar a rede</string>
+</resources>

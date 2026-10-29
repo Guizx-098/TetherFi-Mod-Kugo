@@ -131,7 +131,7 @@ fun QRCodeScreen(
                   modifier = Modifier.size(qrCodeSize),
                   model = code,
                   imageLoader = imageLoader,
-                  contentDescription = "QR Code",
+                  contentDescription = stringResource(R.string.qr_code),
                   contentScale = ContentScale.FillBounds,
               )
             }

@@ -16,4 +16,11 @@
 <resources>
   <string name="app_name">TetherFuseNet</string>
   <string name="toggle_hotspot_shortcut">Toggle TetherFuseNet Hotspot</string>
+  <string name="proxy_tile_error">ERROR</string>
+  <string name="proxy_tile_error_unknown">An unexpected error occurred</string>
+  <string name="proxy_tile_click_to_start">Click to start Hotspot</string>
+  <string name="proxy_tile_running">Hotspot Running</string>
+  <string name="proxy_tile_starting">Starting...</string>
+  <string name="proxy_tile_stopping">Stopping...</string>
+  <string name="snackbar_enable_one_proxy_type">You must enable at least one proxy type.</string>
 </resources>
