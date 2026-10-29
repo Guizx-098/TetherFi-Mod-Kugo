@@ -1,0 +1,16 @@
+Kugo Hotspot
+Copyright 2026 Guizx-098
+
+Este produto é derivado do TetherFuseNet (TetherFi).
+Copyright pyamsoft e colaboradores.
+Código original: https://github.com/pyamsoft/tetherfusenet
+Licenciado sob a Apache License, Version 2.0 (veja o arquivo LICENSE).
+
+Alterações feitas em relação ao código original:
+- Nova identidade: nome "Kugo Hotspot", ícone, identificador do aplicativo e links.
+- Tradução completa da interface para português do Brasil (pt-BR).
+- Lista de aparelhos conectados atualizada em tempo real, com verificação de presença.
+- Textos de notificação, atalho e diálogos movidos para recursos traduzíveis.
+
+Os arquivos de código-fonte do projeto original mantêm seus avisos de direitos autorais.
+Este projeto não é afiliado nem endossado por pyamsoft.

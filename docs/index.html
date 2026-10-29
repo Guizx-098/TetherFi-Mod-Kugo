@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kugo Hotspot — Compartilhe sua internet</title>
+<link rel="icon" href="assets/favicon.png">
+<style>
+:root{--bg:#f6f8e8;--fg:#1c1c1a;--muted:#5b5e4d;--card:#ffffff;--line:#dfe3c8;--lime:#c5d32e;--limeInk:#1c1c1a;}
+@media (prefers-color-scheme:dark){:root{--bg:#121210;--fg:#f2f4e4;--muted:#a9ad98;--card:#1d1d1a;--line:#33342b;--lime:#c5d32e;--limeInk:#121210;}}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:880px;margin:0 auto;padding:24px 18px 60px}
+header.hero{text-align:center;padding:36px 0 18px}
+header.hero img{width:112px;height:112px;border-radius:26px;box-shadow:0 8px 30px rgba(0,0,0,.25)}
+h1{font-size:2.2rem;margin:.6em 0 .2em;letter-spacing:-.02em}h2{margin:1.6em 0 .5em;font-size:1.3rem}
+.sub{color:var(--muted);max-width:560px;margin:0 auto 1.2em}
+.btn{display:inline-block;background:var(--lime);color:var(--limeInk);font-weight:700;padding:14px 26px;border-radius:999px;text-decoration:none;margin:6px}
+.btn.alt{background:transparent;color:var(--fg);border:2px solid var(--line)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 18px}
+.card h3{margin:.1em 0 .4em;font-size:1.05rem}.card ul{margin:0;padding-left:1.1em;color:var(--muted)}
+.tag{display:inline-block;background:var(--lime);color:var(--limeInk);border-radius:999px;padding:2px 12px;font-size:.85rem;font-weight:700}
+footer{margin-top:40px;color:var(--muted);font-size:.9rem;text-align:center}
+a{color:inherit}ol li{margin:.4em 0}
+</style>
+</head>
+<body><div class="wrap">
+<header class="hero">
+  <img src="assets/icon-512.png" alt="Ícone do Kugo Hotspot">
+  <h1>Kugo Hotspot</h1>
+  <p class="sub">Compartilhe a internet do seu Android com outros aparelhos, veja quem está conectado em tempo real e controle a sua rede. Sem root.</p>
+  <p><span class="tag">Versão 1.0.0</span></p>
+  <a class="btn" href="https://github.com/Guizx-098/TetherFi-Mod-Kugo/releases/latest">⬇ Baixar o APK</a>
+  <a class="btn alt" href="https://github.com/Guizx-098/TetherFi-Mod-Kugo">Código no GitHub</a>
+</header>
+
+<h2>Funcionalidades</h2>
+<div class="grid">
+  <div class="card"><h3>Hotspot e rede</h3><ul><li>Wi-Fi Direct com nome e senha</li><li>2,4, 5 ou 6 GHz (quando disponível)</li><li>Tethering USB (RNDIS)</li><li>Código QR para conectar</li></ul></div>
+  <div class="card"><h3>Proxy</h3><ul><li>HTTP/HTTPS, simples e rápido</li><li>SOCKS4A / SOCKS5H</li><li>Tempo limite de socket ajustável</li></ul></div>
+  <div class="card"><h3>Aparelhos conectados</h3><ul><li>Lista atualizada em tempo real</li><li>Apelidos que voltam na reconexão</li><li>Bloqueio por aparelho</li><li>Limites de transferência e de banda</li></ul></div>
+  <div class="card"><h3>Dia a dia</h3><ul><li>Atalho e tile para ligar e desligar</li><li>Notificação com o status</li><li>Modos de economia e de tela ligada</li><li>Interface em português do Brasil</li></ul></div>
+</div>
+
+<h2>Como instalar</h2>
+<ol>
+  <li>Toque em <b>Baixar o APK</b> e baixe o arquivo mais recente.</li>
+  <li>Permita a instalação de apps de fontes desconhecidas, se o Android pedir.</li>
+  <li>Abra o Kugo Hotspot, conceda as permissões e toque em <b>Iniciar Hotspot</b>.</li>
+</ol>
+<p class="sub" style="margin-left:0">O nome da rede criada pelo sistema sempre começa com <code>DIRECT-xx-</code>, uma exigência do Android para redes Wi-Fi Direct.</p>
+
+<footer>
+  <p>Mantido por <a href="https://github.com/Guizx-098">Guizx-098</a> · <a href="privacy.html">Privacidade</a> · <a href="terms.html">Termos</a> · <a href="https://github.com/Guizx-098/TetherFi-Mod-Kugo/issues">Reportar problema</a></p>
+  <p>Baseado no TetherFuseNet, de pyamsoft, sob a licença Apache 2.0. Projeto não afiliado a pyamsoft.</p>
+</footer>
+</div></body></html>

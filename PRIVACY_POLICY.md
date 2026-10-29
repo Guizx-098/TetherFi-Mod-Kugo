@@ -1,69 +1,41 @@
-# Privacy Policy
+# Política de Privacidade — Kugo Hotspot
 
-pyamsoft built the TetherFuseNet App as an Open Source app. This App is provided by pyamsoft
-at no cost and is intended for use as is.
+Última atualização: 29 de outubro de 2026
 
-## Location Data and Use
+O **Kugo Hotspot** é um aplicativo de código aberto mantido por Guizx-098. Ele é gratuito e
+funciona sem conta ou login.
 
-The App requires use of your device's Precise Location to create a local Wi-Fi Group
-network in order to perform the main purpose of the application. Location is required
-only to create the Wi-Fi Group network as required by the Operating System. Your location
-is not used outside of this function and is never collected, tracked, or shared in any way.
+## Localização
 
-## Foreground Service Usage
+O Android exige a permissão de localização precisa (ou de dispositivos Wi-Fi por perto, conforme a
+versão) para criar uma rede Wi-Fi Direct local. O app usa essa permissão somente para esse fim.
+A sua localização não é coletada, armazenada nem enviada para ninguém.
 
-The App makes use of an Foreground Service to perform it's primary function. The foreground
-service is used to launch an immediate, long-running, Wi-Fi direct network for connected
-devices. This Wi-Fi direct network is used so that connected devices can exchange networking
-data. The App does not use a Foreground Service for any other use case except to perform this
-primary function.
+## Serviço em primeiro plano
 
-## Information Collection and Use
+O app usa um serviço em primeiro plano, com notificação, para manter o hotspot funcionando
+enquanto ele está ligado. Ele não é usado para nenhuma outra finalidade.
 
-This App does not collect any data. Your data stays private, on your device, only accessible
-by you. Data is never shared with any party, including the developer, for any purpose, except
-in the case where you voluntarily send the developer data for troubleshooting issues like
-application crashes or usability issues.
+## Tráfego de rede
 
-A third-party library is used to provide an In-App Purchase feature, which is subject to the
-following third-party privacy policy:
+O tráfego dos aparelhos conectados passa pelo proxy do seu celular e segue para a internet pela
+conexão que você já usa. O app não armazena o conteúdo desse tráfego e não o envia para servidores
+do desenvolvedor.
 
-[Google Play Services](https://www.google.com/policies/privacy/)
+## Dados guardados no aparelho
 
-## Links to Other Sites
+O app guarda localmente, no seu celular, apenas as suas configurações (nome e senha do hotspot,
+portas, preferências) e os apelidos que você dá aos aparelhos conectados, associados ao endereço
+IP deles. Esses dados ficam no aparelho e podem ser apagados limpando os dados do app ou
+desinstalando-o.
 
-This App may contain links to other sites. If you click on a third-party link, you will be
-directed to that site. Note that these external sites are not operated by pyamsoft. Therefore,
-pyamsoft strongly advises you to review the Privacy Policy of these websites. pyamsoft has no
-control over and assume no responsibility for the content, privacy policies, or practices of
-any third-party sites or services.
+## Serviços de terceiros
 
-## Children’s Privacy
+Dependendo de onde você instala o app, recursos fornecidos pela loja (como avaliação ou
+atualizações) podem ser executados pelos serviços dessa loja, sob as políticas dela. O
+desenvolvedor não recebe dados pessoais por esses recursos.
 
-This App and related Services do not address anyone under the age of 18. pyamsoft does not
-knowingly service any users below the age of 18.
+## Contato
 
-## Changes to This Privacy Policy
-
-pyamsoft may update this Privacy Policy from time to time. Thus, you are advised to review
-this page periodically for any changes. pyamsoft will notify you of any changes by posting
-the new Privacy Policy on this page. These changes are effective immediately after they are
-posted on this page.
-
-## Contact Us
-
-If you have any questions or suggestions about the Privacy Policy, do not hesitate to contact
-pyamsoft at pyamsoftapps@gmail.com.
-
-## License
-
-This app and its source code is licensed under the terms of the Apache License version 2:
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
-except in compliance with the License. You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software distributed under the
-License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
-either express or implied. See the License for the specific language governing permissions
-and limitations under the License.
+Dúvidas ou pedidos: abra uma _issue_ em
+https://github.com/Guizx-098/TetherFi-Mod-Kugo/issues

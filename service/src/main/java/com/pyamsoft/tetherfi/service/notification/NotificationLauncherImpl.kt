@@ -269,8 +269,8 @@ internal constructor(
     private val LONG_RUNNING_CHANNEL_INFO =
         NotifyChannelInfo(
             id = "channel_tetherfi_service_1",
-            title = "TetherFuseNet Proxy",
-            description = "TetherFuseNet Proxy Service",
+            title = "Kugo Hotspot",
+            description = "Kugo Hotspot Service",
         )
 
     private val EMPTY_WATCHER = NotificationLauncher.Watcher {}

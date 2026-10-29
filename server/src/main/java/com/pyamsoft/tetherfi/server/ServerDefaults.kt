@@ -22,13 +22,8 @@ import androidx.annotation.ChecksSdkIntAtLeast
 
 object ServerDefaults {
 
-  /**
-   * This SSID must be kept as the default "TetherFi" which is the old app name
-   *
-   * Otherwise it will cause upgrading users to have to re-setup the network, which we do not want
-   * them to do
-   */
-  const val WIFI_SSID = "TetherFi"
+  /** The default network name. Kugo Hotspot is a new app, so there are no old installs to keep. */
+  const val WIFI_SSID = "KugoHotspot"
 
   /** Default port for HTTP server */
   const val HTTP_PORT = 8228

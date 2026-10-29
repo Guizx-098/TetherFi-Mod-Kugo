@@ -1,0 +1,71 @@
+name: Publicar APK
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar projeto
+        uses: actions/checkout@v4
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Configurar Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: "platform-tools"
+
+      - name: Instalar SDK necessário
+        run: |
+          sdkmanager --install --channel=3 "platforms;android-37.0" "build-tools;37.0.0"
+          SDK_ROOT="${ANDROID_HOME:-$ANDROID_SDK_ROOT}"
+          if [ -d "$SDK_ROOT/platforms/android-37.0" ] && [ ! -e "$SDK_ROOT/platforms/android-37" ]; then
+            ln -s android-37.0 "$SDK_ROOT/platforms/android-37"
+          fi
+
+      - name: Criar local.properties para CI
+        run: |
+          SDK_ROOT="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
+          if [ -z "$SDK_ROOT" ] || [ ! -d "$SDK_ROOT" ]; then
+            echo "ERRO: Android SDK não encontrado: $SDK_ROOT"
+            exit 1
+          fi
+          echo "sdk.dir=$SDK_ROOT" > local.properties
+
+      - name: Preparar assinatura debug
+        run: |
+          if [ ! -f app/debug.keystore ]; then
+            keytool -genkeypair -v -keystore app/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+          fi
+
+      - name: Compilar APK
+        run: |
+          chmod +x gradlew
+          ./gradlew :app:assembleDebug --no-daemon --stacktrace
+
+      - name: Publicar na Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          APK=$(find app/build/outputs/apk -path '*fdroid*' -name '*.apk' | head -n1)
+          if [ -z "$APK" ]; then
+            echo "ERRO: APK da variante F-Droid não encontrado"
+            find app/build/outputs/apk -name '*.apk'
+            exit 1
+          fi
+          cp "$APK" "Kugo-Hotspot-${TAG}.apk"
+          gh release create "$TAG" "Kugo-Hotspot-${TAG}.apk" \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "Kugo Hotspot ${TAG}" \
+            --notes "APK do Kugo Hotspot ${TAG}. Baixe o arquivo .apk abaixo e instale no Android. Baseado no TetherFuseNet (pyamsoft), licença Apache 2.0."

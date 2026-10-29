@@ -33,10 +33,10 @@ android {
   compileSdk = libs.versions.compileSdk.get().toInt()
 
   defaultConfig {
-    applicationId = "com.pyamsoft.tetherfi"
+    applicationId = "com.guizx.kugohotspot"
 
-    versionCode = 76
-    versionName = "20261007-1"
+    versionCode = 1
+    versionName = "1.0.0"
 
     minSdk = libs.versions.minSdk.get().toInt()
     targetSdk = libs.versions.targetSdk.get().toInt()
@@ -113,8 +113,6 @@ android {
 
     debug {
       signingConfig = signingConfigs.getByName("debug")
-      applicationIdSuffix = ".dev"
-      versionNameSuffix = "-dev"
 
       // https://developer.android.com/build/shrink-code#native-crash-support
       // androidx.graphics.path includes native code now?

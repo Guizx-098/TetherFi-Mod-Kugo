@@ -15,8 +15,8 @@
   ~ limitations under the License.
   -->
 <resources>
-  <string name="app_name">TetherFuseNet（開發版）</string>
+  <string name="app_name">Kugo Hotspot</string>
   <string
     name="toggle_hotspot_shortcut"
-  >啟/停 TetherFuseNet（開發版）熱點</string>
+  >啟/停 Kugo Hotspot 熱點</string>
 </resources>

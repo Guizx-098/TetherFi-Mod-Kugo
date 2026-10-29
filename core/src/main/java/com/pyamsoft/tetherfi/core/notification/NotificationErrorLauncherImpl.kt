@@ -57,8 +57,8 @@ internal constructor(
     private val ERROR_CHANNEL_INFO =
         NotifyChannelInfo(
             id = "channel_tetherfi_error_1",
-            title = "TetherFuseNet Errors",
-            description = "TetherFuseNet Errors",
+            title = "Kugo Hotspot Errors",
+            description = "Kugo Hotspot Errors",
         )
   }
 }

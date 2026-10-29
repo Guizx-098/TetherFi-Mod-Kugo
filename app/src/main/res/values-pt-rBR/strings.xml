@@ -15,7 +15,7 @@
   ~ limitations under the License.
   -->
 <resources>
-  <string name="toggle_hotspot_shortcut">Alternar Hotspot do TetherFuseNet</string>
+  <string name="toggle_hotspot_shortcut">Alternar Kugo Hotspot</string>
   <string name="proxy_tile_error">ERRO</string>
   <string name="proxy_tile_error_unknown">Ocorreu um erro inesperado</string>
   <string name="proxy_tile_click_to_start">Toque para iniciar o Hotspot</string>
