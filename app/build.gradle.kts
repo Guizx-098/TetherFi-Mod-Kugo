@@ -155,7 +155,6 @@ dependencies {
   ksp(libs.dagger.compiler)
 
   // Leak Canary
-  debugImplementation(libs.leakcanary)
   implementation(libs.leakcanary.plumber)
 
   // AndroidX
