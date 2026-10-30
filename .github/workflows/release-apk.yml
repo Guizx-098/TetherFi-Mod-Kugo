@@ -65,7 +65,12 @@ jobs:
             exit 1
           fi
           cp "$APK" "Kugo-Hotspot-${TAG}.apk"
+          if [ -f RELEASE_NOTES.md ]; then
+            NOTES=(--notes-file RELEASE_NOTES.md)
+          else
+            NOTES=(--generate-notes)
+          fi
           gh release create "$TAG" "Kugo-Hotspot-${TAG}.apk" \
             --repo "$GITHUB_REPOSITORY" \
             --title "Kugo Hotspot ${TAG}" \
-            --notes "APK do Kugo Hotspot ${TAG}. Baixe o arquivo .apk abaixo e instale no Android. Baseado no TetherFuseNet (pyamsoft), licença Apache 2.0."
+            "${NOTES[@]}"
