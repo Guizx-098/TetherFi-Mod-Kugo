@@ -246,6 +246,11 @@ internal fun EditSsid(
             return@remember false
           }
 
+          // The Wi-Fi Direct network name must start with DIRECT-xy, and xy come from this name
+          if (!ServerDefaults.isValidSsidName(ssid)) {
+            return@remember false
+          }
+
           // SSID must be less than 32 bytes long
           // This is enforced by some IEEE standard
           // http://standards.ieee.org/getieee802/download/802.11-2012.pdf

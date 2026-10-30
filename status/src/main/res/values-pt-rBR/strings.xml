@@ -19,6 +19,6 @@
   <string name="hotspot_configuration_google_please">Isto não é uma conta nem um login.</string>
   <string name="hotspot_config_defaults">Você pode editar o nome e a senha do Hotspot do %1$s. Por padrão, uma configuração válida é criada para você.</string>
   <string name="hotspot_config_no_account">O %1$s nunca vai exigir que você use uma conta ou lembre de um login. Isto serve apenas para configurar a rede Wi-Fi transmitida.</string>
-  <string name="hotspot_config_name_requirement">• O nome DEVE começar com %1$s. Isso é um requisito do sistema.</string>
+  <string name="hotspot_config_name_requirement">• O nome aparece depois de %1$s e DEVE começar com pelo menos duas letras (A-Z). Isso é um requisito do sistema.</string>
   <string name="hotspot_config_password_requirement">• A senha deve ter pelo menos 8 caracteres. Isso é um requisito do sistema.</string>
 </resources>

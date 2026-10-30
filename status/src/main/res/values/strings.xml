@@ -28,7 +28,7 @@
   >%1$s will never require you to use an account or remember a login. This is only to setup the broadcasted Wi-Fi Network.</string>
   <string
     name="hotspot_config_name_requirement"
-  >• The name MUST be prefixed with %1$s. This is a system requirement.</string>
+  >• The name is shown after %1$s and MUST start with at least two letters (A-Z). This is a system requirement.</string>
   <string
     name="hotspot_config_password_requirement"
   >• The password must be at least 8 characters long. This is a system requirement.</string>

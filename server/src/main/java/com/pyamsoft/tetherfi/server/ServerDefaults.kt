@@ -33,7 +33,26 @@ object ServerDefaults {
 
   val WIFI_NETWORK_BAND = ServerNetworkBand.LEGACY
 
-  const val WIFI_SSID_PREFIX = "DIRECT-TF-"
+  /**
+   * Android Wi-Fi Direct requires the network name to start with "DIRECT-xy", where xy are two
+   * letters or digits. The two characters after "DIRECT-" are the first two characters of the name
+   * the person chooses, so the person must start the name with at least two letters.
+   */
+  const val WIFI_SSID_PREFIX = "DIRECT-"
+
+  /**
+   * A name is valid if it starts with two ASCII letters. Android accepts digits too, but we ask for
+   * letters only to stay on the safe side.
+   */
+  @JvmStatic
+  @CheckResult
+  fun isValidSsidName(ssid: String): Boolean {
+    if (ssid.length < 2) {
+      return false
+    }
+
+    return ssid.take(2).all { it in 'a'..'z' || it in 'A'..'Z' }
+  }
 
   @JvmStatic
   @CheckResult

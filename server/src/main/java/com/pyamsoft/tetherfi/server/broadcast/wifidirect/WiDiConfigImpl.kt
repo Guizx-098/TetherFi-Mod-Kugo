@@ -38,7 +38,11 @@ internal constructor(
   @CheckResult
   @RequiresApi(Build.VERSION_CODES.Q)
   private suspend fun getPreferredSsid(): String {
-    return preferences.listenForSsidChanges().first()
+    val ssid = preferences.listenForSsidChanges().first()
+
+    // Android refuses a network name that does not start with "DIRECT-xy". An older saved name
+    // that is too short, or does not start with two letters, would stop the hotspot from starting.
+    return if (ServerDefaults.isValidSsidName(ssid)) ssid else ServerDefaults.WIFI_SSID
   }
 
   @CheckResult
