@@ -59,4 +59,15 @@
   <!-- TODO(Peter): Need zh-rTW translation -->
   <string name="trouble_click_expand">Click to expand Error trace</string>
   <string name="trouble_unexpected_error">Unexpected Hotspot Error</string>
+  <string name="trouble_kind_broadcast">Could not create the Hotspot network</string>
+  <string name="trouble_kind_proxy">Could not start the proxy</string>
+  <string name="trouble_kind_both">Could not create the network or start the proxy</string>
+  <string name="trouble_cause_port">The proxy port could not be opened. It may already be in use by another app.</string>
+  <string name="trouble_cause_p2p_busy">Wi-Fi Direct is busy. Turn Wi-Fi off and on, then try again.</string>
+  <string name="trouble_cause_p2p_unsupported">This device does not support Wi-Fi Direct.</string>
+  <string name="trouble_cause_p2p_no_service">Wi-Fi Direct reported \"no service requests\".</string>
+  <string name="trouble_cause_p2p_error">Android refused to create the Wi-Fi Direct network (generic system error).</string>
+  <string name="trouble_cause_channel">Could not open the Wi-Fi Direct channel. Make sure Wi-Fi is on.</string>
+  <string name="trouble_cause_permission">A required permission is missing.</string>
+  <string name="trouble_cause_no_info">Wi-Fi Direct did not return the network information.</string>
 </resources>

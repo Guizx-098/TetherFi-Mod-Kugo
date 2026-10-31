@@ -33,7 +33,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.tetherfi.server.broadcast.BroadcastType
-import com.pyamsoft.tetherfi.server.broadcast.rndis.RNDISInitializeException
 import com.pyamsoft.tetherfi.ui.R
 import org.jetbrains.annotations.TestOnly
 
@@ -49,26 +48,22 @@ fun TroubleshootUnableToStart(
   val (showStackTrace, setShowStackTrace) = rememberSaveable { mutableStateOf(false) }
 
   val context = LocalContext.current
-  val errType =
-      remember(
-          isBroadcastError,
-          isProxyError,
-          context,
-      ) {
-        if (isBroadcastError && isProxyError) {
-          context.getString(R.string.trouble_err_type_both)
-        } else if (isProxyError) {
-          context.getString(R.string.trouble_err_type_proxy)
-        } else {
-          context.getString(R.string.trouble_err_type_broadcast)
-        }
+  val unexpectedError = stringResource(R.string.trouble_unexpected_error)
+
+  val kind =
+      stringResource(
+          when {
+            isBroadcastError && isProxyError -> R.string.trouble_kind_both
+            isProxyError -> R.string.trouble_kind_proxy
+            else -> R.string.trouble_kind_broadcast
+          },
+      )
+
+  val description =
+      remember(throwable, context, unexpectedError) {
+        throwable?.let { describeStartError(context, it, unexpectedError) }
       }
 
-  val showTroubleshooting =
-      remember(isBroadcastError, isProxyError) { isBroadcastError || isProxyError }
-
-  // TODO(Peter): Lazy column
-  // TODO(Peter): Checkbox to show stacktrace
   Column(
       modifier = modifier.padding(horizontal = MaterialTheme.keylines.content),
   ) {
@@ -79,108 +74,45 @@ fun TroubleshootUnableToStart(
     )
     Text(
         modifier = Modifier.padding(bottom = MaterialTheme.keylines.content),
-        text = stringResource(R.string.trouble_description, errType),
+        text = kind,
         fontWeight = FontWeight.W700,
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.error,
     )
 
-    if (showTroubleshooting) {
+    description?.also { desc ->
       Text(
-          modifier = Modifier.padding(bottom = MaterialTheme.keylines.baseline),
-          text = stringResource(R.string.trouble_double_check),
-          style = MaterialTheme.typography.bodySmall,
-          fontWeight = FontWeight.W700,
-          color = MaterialTheme.colorScheme.onSurfaceVariant,
-      )
-    }
-
-    if (isBroadcastError) {
-      Text(
-          modifier = Modifier.padding(bottom = MaterialTheme.keylines.baseline),
-          text = stringResource(R.string.trouble_location_service),
+          text = desc.summary,
           style = MaterialTheme.typography.bodyLarge,
       )
 
-      if (broadcastType == BroadcastType.WIFI_DIRECT) {
+      desc.detail?.also { detail ->
         Text(
-            modifier = Modifier.padding(bottom = MaterialTheme.keylines.baseline),
-            text = stringResource(R.string.trouble_broadcast_wifi_on),
-            style = MaterialTheme.typography.bodyLarge,
-        )
-
-        Text(
-            modifier = Modifier.padding(bottom = MaterialTheme.keylines.baseline),
-            text = stringResource(R.string.trouble_broadcast_wifi_restart),
-            style = MaterialTheme.typography.bodyLarge,
-        )
-
-        Text(
-            modifier = Modifier.padding(bottom = MaterialTheme.keylines.baseline),
-            text = stringResource(R.string.trouble_broadcast_password_length),
-            style = MaterialTheme.typography.bodyLarge,
-        )
-      } else if (broadcastType == BroadcastType.RNDIS) {
-        Text(
-            modifier = Modifier.padding(bottom = MaterialTheme.keylines.baseline),
-            text = stringResource(R.string.trouble_connect_rndis),
-            style = MaterialTheme.typography.bodyLarge,
-        )
-        Text(
-            modifier = Modifier.padding(bottom = MaterialTheme.keylines.baseline),
-            text = stringResource(R.string.trouble_broadcast_rndis),
-            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.padding(top = MaterialTheme.keylines.baseline),
+            text = detail,
+            style =
+                MaterialTheme.typography.bodySmall.copy(
+                    fontFamily = FontFamily.Monospace,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                ),
         )
       }
     }
 
-    if (isProxyError) {
-      Text(
-          modifier = Modifier.padding(bottom = MaterialTheme.keylines.baseline),
-          text = stringResource(R.string.trouble_proxy_already_used),
-          style = MaterialTheme.typography.bodyLarge,
-      )
-
-      Text(
-          modifier = Modifier.padding(bottom = MaterialTheme.keylines.baseline),
-          text = stringResource(R.string.trouble_proxy_port),
-          style = MaterialTheme.typography.bodyLarge,
-      )
-    }
-
-    val unexpectedError = stringResource(R.string.trouble_unexpected_error)
     throwable?.also { err ->
-      val title =
-          remember(err, unexpectedError) {
-            // Special message handling for RNDIS initialization errors
-            if (err is RNDISInitializeException) {
-              return@remember err.candidateMessage
-            }
-
-            return@remember err.message.orEmpty().ifBlank { unexpectedError }
-          }
-
-      Column(
+      Text(
           modifier =
               Modifier.padding(vertical = MaterialTheme.keylines.content).clickable {
                 setShowStackTrace(!showStackTrace)
               },
-      ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.bodyLarge,
-        )
-
-        Text(
-            text = stringResource(R.string.trouble_click_expand),
-            style = MaterialTheme.typography.bodySmall,
-        )
-      }
+          text = stringResource(R.string.trouble_click_expand),
+          style = MaterialTheme.typography.bodySmall,
+      )
 
       if (showStackTrace) {
         val trace = remember(err) { err.stackTraceToString() }
         Text(
-            modifier = Modifier.padding(vertical = MaterialTheme.keylines.content),
+            modifier = Modifier.padding(bottom = MaterialTheme.keylines.content),
             text = trace,
             style =
                 MaterialTheme.typography.bodySmall.copy(

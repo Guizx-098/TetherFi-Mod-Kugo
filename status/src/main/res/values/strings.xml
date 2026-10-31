@@ -32,4 +32,5 @@
   <string
     name="hotspot_config_password_requirement"
   >• The password must be at least 8 characters long. This is a system requirement.</string>
+  <string name="hotspot_configuration_hint">Name: start with two letters (A-Z). Password: at least 8 characters.</string>
 </resources>

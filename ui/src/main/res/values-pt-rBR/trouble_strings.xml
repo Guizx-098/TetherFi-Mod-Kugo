@@ -31,4 +31,15 @@
   <string name="trouble_broadcast_rndis">• O tethering USB precisa estar LIGADO</string>
   <string name="trouble_click_expand">Toque para expandir o rastreamento do erro</string>
   <string name="trouble_unexpected_error">Erro inesperado no Hotspot</string>
+  <string name="trouble_kind_broadcast">Não foi possível criar a rede do Hotspot</string>
+  <string name="trouble_kind_proxy">Não foi possível iniciar o proxy</string>
+  <string name="trouble_kind_both">Não foi possível criar a rede nem iniciar o proxy</string>
+  <string name="trouble_cause_port">Não foi possível abrir a porta do proxy. Ela pode já estar em uso por outro app.</string>
+  <string name="trouble_cause_p2p_busy">O Wi-Fi Direct está ocupado. Desligue e ligue o Wi-Fi e tente novamente.</string>
+  <string name="trouble_cause_p2p_unsupported">Este aparelho não é compatível com Wi-Fi Direct.</string>
+  <string name="trouble_cause_p2p_no_service">O Wi-Fi Direct informou \"sem solicitações de serviço\".</string>
+  <string name="trouble_cause_p2p_error">O Android recusou criar a rede Wi-Fi Direct (erro genérico do sistema).</string>
+  <string name="trouble_cause_channel">Não foi possível abrir o canal do Wi-Fi Direct. Confirme que o Wi-Fi está ligado.</string>
+  <string name="trouble_cause_permission">Falta uma permissão necessária.</string>
+  <string name="trouble_cause_no_info">O Wi-Fi Direct não retornou as informações da rede.</string>
 </resources>

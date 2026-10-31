@@ -40,7 +40,6 @@ import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.uri.rememberUriHandler
 import com.pyamsoft.tetherfi.core.GITHUB_URL
 import com.pyamsoft.tetherfi.info.R
-import com.pyamsoft.tetherfi.ui.dialog.SlowSpeedsUpsell
 
 private enum class ConnectionCompleteContentTypes {
   SHARING,
@@ -82,108 +81,8 @@ internal fun LazyListScope.renderConnectionComplete(
       )
     }
   }
-
-  item(
-      contentType = ConnectionCompleteContentTypes.SLOW,
-  ) {
-    OtherInstruction(
-        modifier = itemModifier.padding(top = MaterialTheme.keylines.content),
-    ) {
-      SlowSpeedsUpsell(
-          style =
-              MaterialTheme.typography.bodyMedium.copy(
-                  color = MaterialTheme.colorScheme.onSurfaceVariant,
-              ),
-          onClick = onShowSlowSpeedHelp,
-      )
-    }
-  }
-
-  item(
-      contentType = ConnectionCompleteContentTypes.FULL,
-  ) {
-    FullConnectionInstructions(
-        modifier = itemModifier.padding(top = MaterialTheme.keylines.content),
-    )
-  }
 }
 
-@Composable
-private fun FullConnectionInstructions(
-    modifier: Modifier = Modifier,
-) {
-  val uriHandler = rememberUriHandler()
-  val handleLinkClicked by rememberUpdatedState { link: LinkAnnotation ->
-    if (link is LinkAnnotation.Url) {
-      uriHandler.openUri(link.url)
-    }
-  }
-
-  val linkColor = MaterialTheme.colorScheme.primary
-
-  val linkText = stringResource(R.string.proxy_having_link_text)
-  val rawBlurb = stringResource(R.string.proxy_having_trouble, linkText)
-  val linkBlurb =
-      remember(
-          linkColor,
-          rawBlurb,
-          linkText,
-      ) {
-        val linkIndex = rawBlurb.indexOf(linkText)
-
-        val linkStyle =
-            SpanStyle(
-                color = linkColor,
-                textDecoration = TextDecoration.Underline,
-            )
-
-        val spanStyles =
-            listOf(
-                AnnotatedString.Range(
-                    linkStyle,
-                    start = linkIndex,
-                    end = linkIndex + linkText.length,
-                ),
-            )
-
-        val visualString =
-            AnnotatedString(
-                rawBlurb,
-                spanStyles = spanStyles,
-            )
-
-        // Can only add annotations to builders
-        return@remember AnnotatedString.Builder(visualString)
-            .apply {
-              addLink(
-                  url =
-                      LinkAnnotation.Url(
-                          url = "${GITHUB_URL}/wiki/Setup-A-Proxy",
-                          linkInteractionListener = { handleLinkClicked(it) },
-                      ),
-                  start = linkIndex,
-                  end = linkIndex + linkText.length,
-              )
-            }
-            .toAnnotatedString()
-      }
-
-  Card(
-      modifier = modifier.padding(vertical = MaterialTheme.keylines.content),
-      border =
-          BorderStroke(
-              width = 2.dp,
-              color = MaterialTheme.colorScheme.primaryContainer,
-          ),
-      shape = MaterialTheme.shapes.large,
-  ) {
-    Text(
-        modifier = Modifier.fillMaxWidth().padding(MaterialTheme.keylines.content),
-        text = linkBlurb,
-        style = MaterialTheme.typography.bodyLarge,
-    )
-  }
-}
 
 @Composable
 @Preview(showBackground = true)

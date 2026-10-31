@@ -40,7 +40,6 @@ import com.pyamsoft.tetherfi.ui.LANDSCAPE_MAX_WIDTH
 import com.pyamsoft.tetherfi.ui.LoadingSpinner
 import com.pyamsoft.tetherfi.ui.STATIC_HOTSPOT_ERROR
 import com.pyamsoft.tetherfi.ui.ServerViewState
-import com.pyamsoft.tetherfi.ui.renderLinks
 import com.pyamsoft.tetherfi.ui.renderPYDroidExtras
 import com.pyamsoft.tetherfi.ui.test.TestServerState
 import com.pyamsoft.tetherfi.ui.test.makeTestServerState
@@ -134,11 +133,6 @@ fun BehaviorScreen(
   ) {
     renderPYDroidExtras(
         modifier = Modifier.widthIn(max = LANDSCAPE_MAX_WIDTH),
-    )
-
-    renderLinks(
-        modifier = Modifier.width(LANDSCAPE_MAX_WIDTH),
-        appName = appName,
     )
 
     when (loadingState) {

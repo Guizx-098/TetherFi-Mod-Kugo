@@ -40,7 +40,6 @@ import com.pyamsoft.tetherfi.server.clients.TransferAmount
 import com.pyamsoft.tetherfi.server.clients.TransferUnit
 import com.pyamsoft.tetherfi.ui.LANDSCAPE_MAX_WIDTH
 import com.pyamsoft.tetherfi.ui.ServerViewState
-import com.pyamsoft.tetherfi.ui.renderLinks
 import com.pyamsoft.tetherfi.ui.renderPYDroidExtras
 import com.pyamsoft.tetherfi.ui.test.TEST_HOSTNAME
 import com.pyamsoft.tetherfi.ui.test.TestServerState
@@ -102,11 +101,6 @@ fun ConnectionScreen(
 
     renderExcuse(
         modifier = Modifier.widthIn(max = LANDSCAPE_MAX_WIDTH),
-    )
-
-    renderLinks(
-        modifier = Modifier.widthIn(max = LANDSCAPE_MAX_WIDTH),
-        appName = appName,
     )
 
     item(

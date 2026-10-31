@@ -47,7 +47,6 @@ import com.pyamsoft.tetherfi.status.StatusViewState
 import com.pyamsoft.tetherfi.status.sections.StatusItem
 import com.pyamsoft.tetherfi.ui.R as R2
 import com.pyamsoft.tetherfi.ui.ServerViewState
-import com.pyamsoft.tetherfi.ui.dialog.SlowSpeedsUpsell
 import com.pyamsoft.tetherfi.ui.icons.IconPainters
 import com.pyamsoft.tetherfi.ui.rememberPortNumber
 import com.pyamsoft.tetherfi.ui.rememberServerHostname
@@ -243,9 +242,5 @@ internal fun ViewInstructions(
         text = text,
     )
 
-    SlowSpeedsUpsell(
-        style = MaterialTheme.typography.bodyMedium,
-        onClick = onViewSlowSpeedHelp,
-    )
   }
 }

@@ -192,87 +192,24 @@ internal fun LazyListScope.renderEditableItems(
 @Composable
 private fun NetworkSetupExplainer(
     modifier: Modifier = Modifier,
-    appName: String,
+    @Suppress("UNUSED_PARAMETER") appName: String,
 ) {
-  val requiredPrefix = remember { ServerDefaults.WIFI_SSID_PREFIX }
-
-  val (show, setShow) = remember { mutableStateOf(false) }
-
-  Row(
+  Column(
       modifier = modifier,
-      verticalAlignment = Alignment.CenterVertically,
   ) {
-    Column {
-      Text(
-          text = stringResource(R.string.hotspot_configuration_title),
-          style =
-              MaterialTheme.typography.bodyLarge.copy(
-                  color = MaterialTheme.colorScheme.primary,
-                  fontWeight = FontWeight.W700,
-              ),
-      )
-      Text(
-          modifier = Modifier.padding(bottom = MaterialTheme.keylines.typography),
-          text = stringResource(R.string.hotspot_configuration_google_please, appName),
-          style = MaterialTheme.typography.bodySmall,
-      )
-    }
-
-    IconButton(
-        modifier = Modifier.padding(start = MaterialTheme.keylines.baseline),
-        onClick = { setShow(true) },
-    ) {
-      Icon(
-          painter = IconPainters.info(),
-          contentDescription = stringResource(R.string.hotspot_configuration_title),
-      )
-    }
-  }
-
-  if (show) {
-    val handleHide = { setShow(false) }
-    CardDialog(
-        onDismiss = handleHide,
-    ) {
-      Column(
-          modifier = Modifier.padding(MaterialTheme.keylines.content),
-      ) {
-        Text(
-            modifier = Modifier.padding(bottom = MaterialTheme.keylines.baseline),
-            text = stringResource(R.string.hotspot_config_defaults, appName),
-            style = MaterialTheme.typography.bodyLarge,
-        )
-        Text(
-            modifier = Modifier.padding(bottom = MaterialTheme.keylines.content),
-            text = stringResource(R.string.hotspot_config_no_account, appName),
-            style = MaterialTheme.typography.bodyLarge,
-        )
-        Text(
-            text = stringResource(R.string.hotspot_config_name_requirement, requiredPrefix),
-            style = MaterialTheme.typography.bodyMedium,
-        )
-        Text(
-            text = stringResource(R.string.hotspot_config_password_requirement),
-            style = MaterialTheme.typography.bodyMedium,
-        )
-
-        Row(
-            modifier = Modifier.padding(top = MaterialTheme.keylines.baseline),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-          Box(
-              modifier = Modifier.weight(1F),
-          )
-          TextButton(
-              onClick = handleHide,
-          ) {
-            Text(
-                text = stringResource(android.R.string.cancel),
-            )
-          }
-        }
-      }
-    }
+    Text(
+        text = stringResource(R.string.hotspot_configuration_title),
+        style =
+            MaterialTheme.typography.bodyLarge.copy(
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.W700,
+            ),
+    )
+    Text(
+        modifier = Modifier.padding(bottom = MaterialTheme.keylines.typography),
+        text = stringResource(R.string.hotspot_configuration_hint),
+        style = MaterialTheme.typography.bodySmall,
+    )
   }
 }
 

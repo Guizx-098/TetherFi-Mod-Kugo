@@ -92,16 +92,6 @@ internal fun VpnBlocker(
         )
       }
 
-      item(
-          contentType = VpnBlockerContentTypes.PRIVACY_POLICY,
-      ) {
-        ViewPrivacyPolicy(
-            modifier =
-                Modifier.padding(horizontal = MaterialTheme.keylines.content)
-                    .padding(top = MaterialTheme.keylines.content),
-            appName = appName,
-        )
-      }
     }
 
     Row(

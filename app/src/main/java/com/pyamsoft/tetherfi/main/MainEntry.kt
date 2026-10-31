@@ -46,7 +46,6 @@ import com.pyamsoft.tetherfi.status.PermissionRequests
 import com.pyamsoft.tetherfi.status.PermissionResponse
 import com.pyamsoft.tetherfi.ui.LANDSCAPE_MAX_WIDTH
 import com.pyamsoft.tetherfi.ui.ServerPortTypes
-import com.pyamsoft.tetherfi.ui.dialog.SlowSpeedsDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -272,13 +271,5 @@ fun MainEntry(
           onDismiss = { viewModel.handleCloseDialog(MainViewDialogs.QR_CODE) },
       )
     }
-  }
-
-  val isShowingSlowSpeedHelp by viewModel.isShowingSlowSpeedHelp.collectAsStateWithLifecycle()
-  if (isShowingSlowSpeedHelp) {
-    SlowSpeedsDialog(
-        modifier = Modifier.fillUpToPortraitSize().widthIn(max = LANDSCAPE_MAX_WIDTH),
-        onDismiss = { viewModel.handleCloseDialog(MainViewDialogs.SLOW_SPEED_HELP) },
-    )
   }
 }

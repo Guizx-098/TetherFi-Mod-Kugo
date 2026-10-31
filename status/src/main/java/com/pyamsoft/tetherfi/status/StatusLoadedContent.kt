@@ -46,7 +46,6 @@ import com.pyamsoft.tetherfi.status.sections.network.renderNetworkInformation
 import com.pyamsoft.tetherfi.ui.LANDSCAPE_MAX_WIDTH
 import com.pyamsoft.tetherfi.ui.ServerPortTypes
 import com.pyamsoft.tetherfi.ui.ServerViewState
-import com.pyamsoft.tetherfi.ui.renderLinks
 import com.pyamsoft.tetherfi.ui.test.TEST_PASSWORD
 import com.pyamsoft.tetherfi.ui.test.TEST_SSID
 import com.pyamsoft.tetherfi.ui.test.TestServerState
@@ -176,11 +175,6 @@ internal fun LazyListScope.renderLoadedContent(
       )
     }
   }
-
-  renderLinks(
-      modifier = itemModifier,
-      appName = appName,
-  )
 
   item(
       contentType = StatusLoadedContentTypes.SPACER,

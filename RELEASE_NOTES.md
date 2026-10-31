@@ -1,13 +1,11 @@
-## Kugo Hotspot 1.0.1
+## Kugo Hotspot 1.0.2
 
 Baixe o arquivo `.apk` abaixo e instale no Android (permita fontes desconhecidas, se pedido).
 
 ### Novidades
-- Nome da rede mais limpo: agora aparece como `DIRECT-SeuNome`, sem o "TF-" no meio. O nome precisa começar com duas letras (A-Z).
-- Lista de aparelhos conectados atualizada em tempo real: quem sai da rede deixa a lista sem reiniciar o hotspot, e volta com o apelido salvo.
-- Interface completa em português do Brasil.
-- Nova identidade: nome Kugo Hotspot e novo ícone.
-- Removida a ferramenta de desenvolvedor "Leaks", que criava um segundo ícone.
+- **Erros do Hotspot mais claros:** quando o Hotspot não liga, o app mostra o erro específico (por exemplo, Wi-Fi Direct ocupado, porta do proxy em uso ou permissão faltando), em vez de uma lista de possíveis causas. O detalhe técnico aparece logo abaixo.
+- **App mais limpo:** removidos os links externos, o cartão de perguntas frequentes, o diálogo de lentidão, os links de política de privacidade dentro dos avisos e a caixa de explicação da configuração. Créditos, dúvidas e documentação ficam no GitHub.
+- Dica curta sobre o nome e a senha da rede na tela do Hotspot.
 
 ### Observações
 - Os aparelhos conectados ainda precisam configurar o proxy manual no Wi-Fi (endereço e porta mostrados no app).

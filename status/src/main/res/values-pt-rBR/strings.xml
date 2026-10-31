@@ -21,4 +21,5 @@
   <string name="hotspot_config_no_account">O %1$s nunca vai exigir que você use uma conta ou lembre de um login. Isto serve apenas para configurar a rede Wi-Fi transmitida.</string>
   <string name="hotspot_config_name_requirement">• O nome aparece depois de %1$s e DEVE começar com pelo menos duas letras (A-Z). Isso é um requisito do sistema.</string>
   <string name="hotspot_config_password_requirement">• A senha deve ter pelo menos 8 caracteres. Isso é um requisito do sistema.</string>
+  <string name="hotspot_configuration_hint">Nome: comece com duas letras (A-Z). Senha: pelo menos 8 caracteres.</string>
 </resources>
