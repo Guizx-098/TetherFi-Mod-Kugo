@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright 2026 pyamsoft
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at:
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources>
+  <string name="shizuku_title">Hotspot sem prefixo (experimental)</string>
+  <string name="shizuku_description">Usa o Shizuku para ligar o hotspot nativo do Android com o nome escolhido acima, sem o DIRECT- e sem precisar configurar proxy. Pare antes o Hotspot do app. Pode não funcionar em todos os aparelhos.</string>
+  <string name="shizuku_not_running">O Shizuku não está ativo. Abra o app Shizuku e inicie o serviço.</string>
+  <string name="shizuku_needs_permission">O Shizuku está ativo, mas este app ainda não tem permissão.</string>
+  <string name="shizuku_ready">Shizuku pronto.</string>
+  <string name="shizuku_ready_mode">Shizuku pronto (modo %1$s).</string>
+  <string name="shizuku_check_again">Verificar de novo</string>
+  <string name="shizuku_request_permission">Pedir permissão</string>
+  <string name="shizuku_password_short">A senha precisa ter pelo menos 8 caracteres.</string>
+  <string name="shizuku_start">Ligar hotspot</string>
+  <string name="shizuku_stop">Desligar</string>
+  <string name="shizuku_result_failed">Falhou: %1$s</string>
+  <string name="shizuku_result_code">Resultado (código %1$d):\n%2$s</string>
+  <string name="shizuku_result_empty">(sem mensagem)</string>
+</resources>

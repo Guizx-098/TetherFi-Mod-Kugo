@@ -60,6 +60,7 @@ dependencies {
   implementation(libs.androidx.activity.compose)
 
   implementation(libs.pydroid.ui)
+  implementation(libs.shizuku.api)
 
   implementation(project(":core"))
   implementation(project(":server"))
