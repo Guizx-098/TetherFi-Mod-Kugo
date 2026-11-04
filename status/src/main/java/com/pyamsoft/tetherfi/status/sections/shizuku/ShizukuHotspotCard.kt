@@ -183,6 +183,19 @@ internal fun ShizukuHotspotCard(
               Text(text = stringResource(R.string.shizuku_stop))
             }
           }
+
+          OutlinedButton(
+              enabled = !busy,
+              onClick = {
+                busy = true
+                scope.launch {
+                  result = ShizukuHotspot.diagnose()
+                  busy = false
+                }
+              },
+          ) {
+            Text(text = stringResource(R.string.shizuku_diagnose))
+          }
         }
       }
 

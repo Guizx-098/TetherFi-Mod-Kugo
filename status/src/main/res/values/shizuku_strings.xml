@@ -29,4 +29,5 @@
   <string name="shizuku_result_failed">Failed: %1$s</string>
   <string name="shizuku_result_code">Result (code %1$d):\n%2$s</string>
   <string name="shizuku_result_empty">(no message)</string>
+  <string name="shizuku_diagnose">Diagnostic: what does Shizuku allow?</string>
 </resources>

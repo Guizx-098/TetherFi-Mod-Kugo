@@ -108,6 +108,21 @@ internal object ShizukuHotspot {
   @CheckResult
   suspend fun stopHotspot(): ShizukuCommandResult = run("cmd wifi stop-softap")
 
+  /**
+   * Shows what the Shizuku user is allowed to do. This tells us whether turning on the built-in
+   * hotspot by calling Android directly could work on this device.
+   */
+  @CheckResult
+  suspend fun diagnose(): ShizukuCommandResult =
+      run(
+          "echo '== uid'; id; " +
+              "echo; echo '== build'; getprop ro.build.type; " +
+              "echo; echo '== permissoes do shell'; " +
+              "dumpsys package com.android.shell | " +
+              "grep -E 'NETWORK_SETTINGS|TETHER_PRIVILEGED|MANAGE_WIFI' | sort -u; " +
+              "echo; echo '== servicos'; service list | grep -iE 'tethering|wifi'"
+      )
+
   @CheckResult
   private fun quote(value: String): String = "'" + value.replace("'", "'\\''") + "'"
 
