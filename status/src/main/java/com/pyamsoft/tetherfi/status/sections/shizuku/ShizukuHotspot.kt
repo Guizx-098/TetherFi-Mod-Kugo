@@ -16,14 +16,22 @@
 package com.pyamsoft.tetherfi.status.sections.shizuku
 
 import android.content.pm.PackageManager
+import android.net.wifi.SoftApConfiguration
+import android.os.Build
+import android.os.IBinder
+import androidx.annotation.RequiresApi
 import androidx.annotation.CheckResult
+import java.lang.reflect.InvocationTargetException
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.lsposed.hiddenapibypass.HiddenApiBypass
 import rikka.shizuku.Shizuku
+import rikka.shizuku.ShizukuBinderWrapper
+import rikka.shizuku.SystemServiceHelper
 
 /** Where Shizuku stands right now */
 internal enum class ShizukuState {
@@ -98,15 +106,131 @@ internal object ShizukuHotspot {
     }
   }
 
+  /**
+   * Turns on the built-in Android hotspot by calling the Wi-Fi service directly as the Shizuku user.
+   *
+   * The "cmd wifi start-softap" shell command only accepts root, but the Shizuku (shell) user holds
+   * the NETWORK_SETTINGS and TETHER_PRIVILEGED permissions, which is what the service itself asks
+   * for. The Wi-Fi service is a hidden Android interface, so it is called by name, and the
+   * result (or the exact error) is always shown to the person.
+   */
   @CheckResult
   suspend fun startHotspot(
       ssid: String,
       password: String,
   ): ShizukuCommandResult =
-      run("cmd wifi start-softap ${quote(ssid)} wpa2 ${quote(password)}")
+      withContext(context = Dispatchers.IO) {
+        try {
+          if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            return@withContext ShizukuCommandResult(
+                exitCode = null,
+                output = "Android 11 or newer is required",
+            )
+          }
+
+          val service = wifiService()
+          val config = buildConfig(ssid = ssid, password = password)
+          val method =
+              service.javaClass.methods.firstOrNull { it.name == "startTetheredHotspot" }
+                  ?: return@withContext ShizukuCommandResult(
+                      exitCode = null,
+                      output = "startTetheredHotspot not found.\n" + listHotspotMethods(service),
+                  )
+
+          val args: Array<Any?> =
+              when (method.parameterTypes.size) {
+                1 -> arrayOf(config)
+                2 -> arrayOf(config, SHELL_PACKAGE)
+                else ->
+                    return@withContext ShizukuCommandResult(
+                        exitCode = null,
+                        output =
+                            "startTetheredHotspot has an unexpected shape.\n" +
+                                listHotspotMethods(service),
+                    )
+              }
+
+          val started = method.invoke(service, *args)
+          ShizukuCommandResult(
+              exitCode = if (started == true) 0 else 1,
+              output = "startTetheredHotspot -> $started",
+          )
+        } catch (e: CancellationException) {
+          throw e
+        } catch (@Suppress("TooGenericExceptionCaught") e: Throwable) {
+          ShizukuCommandResult(exitCode = null, output = describe(e))
+        }
+      }
 
   @CheckResult
-  suspend fun stopHotspot(): ShizukuCommandResult = run("cmd wifi stop-softap")
+  suspend fun stopHotspot(): ShizukuCommandResult =
+      withContext(context = Dispatchers.IO) {
+        try {
+          val service = wifiService()
+          val method =
+              service.javaClass.methods.firstOrNull { it.name == "stopSoftAp" }
+                  ?: return@withContext ShizukuCommandResult(
+                      exitCode = null,
+                      output = "stopSoftAp not found.\n" + listHotspotMethods(service),
+                  )
+
+          val args: Array<Any?> =
+              when (method.parameterTypes.size) {
+                0 -> emptyArray()
+                else -> arrayOf(SHELL_PACKAGE)
+              }
+
+          val stopped = method.invoke(service, *args)
+          ShizukuCommandResult(
+              exitCode = if (stopped == true) 0 else 1,
+              output = "stopSoftAp -> $stopped",
+          )
+        } catch (e: CancellationException) {
+          throw e
+        } catch (@Suppress("TooGenericExceptionCaught") e: Throwable) {
+          ShizukuCommandResult(exitCode = null, output = describe(e))
+        }
+      }
+
+  /** The Wi-Fi service, whose calls are made by Shizuku as the shell user */
+  @CheckResult
+  private fun wifiService(): Any {
+    // The Wi-Fi interface is hidden from apps, so allow looking it up by name
+    HiddenApiBypass.addHiddenApiExemptions("")
+
+    val binder: IBinder =
+        SystemServiceHelper.getSystemService("wifi") ?: error("Wi-Fi service not found")
+    val wrapped = ShizukuBinderWrapper(binder)
+
+    val stub = Class.forName("android.net.wifi.IWifiManager\$Stub")
+    return stub.getMethod("asInterface", IBinder::class.java).invoke(null, wrapped)
+        ?: error("Wi-Fi service is not available")
+  }
+
+  @CheckResult
+  @RequiresApi(Build.VERSION_CODES.R)
+  private fun buildConfig(
+      ssid: String,
+      password: String,
+  ): SoftApConfiguration =
+      SoftApConfiguration.Builder()
+          .setSsid(ssid)
+          .setPassphrase(password, SoftApConfiguration.SECURITY_TYPE_WPA2_PSK)
+          .build()
+
+  @CheckResult
+  private fun listHotspotMethods(service: Any): String =
+      service.javaClass.methods
+          .filter { it.name.contains("SoftAp", ignoreCase = true) || it.name.contains("Tether", ignoreCase = true) }
+          .joinToString(separator = "\n") { m ->
+            "${m.name}(${m.parameterTypes.joinToString { it.simpleName }})"
+          }
+
+  @CheckResult
+  private fun describe(error: Throwable): String {
+    val root = if (error is InvocationTargetException) error.cause ?: error else error
+    return "${root.javaClass.simpleName}: ${root.message}"
+  }
 
   /**
    * Shows what the Shizuku user is allowed to do. This tells us whether turning on the built-in
@@ -183,4 +307,7 @@ internal object ShizukuHotspot {
       }
 
   private const val WAIT_LIMIT_MS = 20_000L
+
+  /** The package of the shell user. Calls made through Shizuku run as this package */
+  private const val SHELL_PACKAGE = "com.android.shell"
 }

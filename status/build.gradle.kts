@@ -61,6 +61,7 @@ dependencies {
 
   implementation(libs.pydroid.ui)
   implementation(libs.shizuku.api)
+  implementation(libs.hiddenapibypass)
 
   implementation(project(":core"))
   implementation(project(":server"))
