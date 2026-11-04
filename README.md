@@ -58,6 +58,9 @@ celular já tem (Wi-Fi ou dados móveis). Não precisa de root.
 - Atalho no Quick Settings (tile) e atalho no ícone do app para ligar e desligar o hotspot.
 - Notificação com o status e o número de aparelhos conectados.
 
+**Atualizações**
+- O app verifica no GitHub se há uma versão nova ao abrir, e a aba Configurações tem o botão "Verificar atualizações". As versões instalam por cima da anterior (APK com assinatura fixa).
+
 **Idioma**
 - Interface completa em **português do Brasil**, além do inglês.
 

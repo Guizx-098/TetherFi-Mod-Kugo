@@ -43,9 +43,14 @@ jobs:
           fi
           echo "sdk.dir=$SDK_ROOT" > local.properties
 
-      - name: Preparar assinatura debug
+      - name: Preparar assinatura
+        env:
+          KEYSTORE_B64: ${{ secrets.KUGO_KEYSTORE_B64 }}
         run: |
-          if [ ! -f app/debug.keystore ]; then
+          # Usa a chave fixa do projeto. Sem ela, gera uma chave temporária (o APK não atualiza por cima)
+          if [ -n "$KEYSTORE_B64" ]; then
+            echo "$KEYSTORE_B64" | base64 -d > app/debug.keystore
+          elif [ ! -f app/debug.keystore ]; then
             keytool -genkeypair -v -keystore app/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
           fi
 

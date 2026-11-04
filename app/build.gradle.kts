@@ -35,8 +35,8 @@ android {
   defaultConfig {
     applicationId = "com.guizx.kugohotspot"
 
-    versionCode = 5
-    versionName = "1.0.4"
+    versionCode = 6
+    versionName = "1.0.5"
 
     minSdk = libs.versions.minSdk.get().toInt()
     targetSdk = libs.versions.targetSdk.get().toInt()

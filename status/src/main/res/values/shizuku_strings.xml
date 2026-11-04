@@ -30,4 +30,6 @@
   <string name="shizuku_result_code">Result (code %1$d):\n%2$s</string>
   <string name="shizuku_result_empty">(no message)</string>
   <string name="shizuku_diagnose">Diagnostic: what does Shizuku allow?</string>
+  <string name="shizuku_copy">Copy result</string>
+  <string name="shizuku_copied">Copied</string>
 </resources>

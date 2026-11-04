@@ -42,11 +42,16 @@ jobs:
           fi
           echo "sdk.dir=$SDK_ROOT" > local.properties
 
-      - name: Preparar assinatura debug
+      - name: Preparar assinatura
+        env:
+          KEYSTORE_B64: ${{ secrets.KUGO_KEYSTORE_B64 }}
         run: |
-          if [ ! -f app/debug.keystore ]; then
-            keytool -genkeypair -v -keystore app/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+          # A Release precisa usar sempre a MESMA chave, senão o Android não deixa atualizar por cima
+          if [ -z "$KEYSTORE_B64" ]; then
+            echo "ERRO: o segredo KUGO_KEYSTORE_B64 não existe. Sem ele cada versão teria uma assinatura diferente."
+            exit 1
           fi
+          echo "$KEYSTORE_B64" | base64 -d > app/debug.keystore
 
       - name: Compilar APK
         run: |

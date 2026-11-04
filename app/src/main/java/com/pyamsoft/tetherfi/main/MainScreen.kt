@@ -44,6 +44,7 @@ import com.pyamsoft.tetherfi.server.network.PreferredNetwork
 import com.pyamsoft.tetherfi.server.status.RunningStatus
 import com.pyamsoft.tetherfi.service.prereq.HotspotStartBlocker
 import com.pyamsoft.tetherfi.ui.ServerPortTypes
+import com.pyamsoft.tetherfi.update.UpdateHost
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.jetbrains.annotations.TestOnly
 
@@ -83,6 +84,9 @@ fun MainScreen(
   val (snackbarError, setSnackbarError) = remember { mutableStateOf<ServerPortTypes?>(null) }
   val snackbarHostState = remember { SnackbarHostState() }
   val snackbarMessage = stringResource(R.string.snackbar_enable_one_proxy_type)
+
+  // Asks to update when a newer version is on GitHub (only the GitHub build)
+  UpdateHost()
 
   LaunchedEffect(snackbarError, snackbarHostState, setSnackbarError, snackbarMessage) {
     if (snackbarError != null) {

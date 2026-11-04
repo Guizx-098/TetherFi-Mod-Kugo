@@ -16,6 +16,10 @@
 
 package com.pyamsoft.tetherfi.status.sections.shizuku
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -59,6 +64,8 @@ internal fun ShizukuHotspotCard(
   val ssid by state.ssid.collectAsStateWithLifecycle()
   val password by state.password.collectAsStateWithLifecycle()
 
+  val context = LocalContext.current
+  val copiedMessage = stringResource(R.string.shizuku_copied)
   val scope = rememberCoroutineScope()
   var shizuku by remember { mutableStateOf(ShizukuHotspot.state()) }
   var busy by remember { mutableStateOf(false) }
@@ -217,6 +224,17 @@ internal fun ShizukuHotspotCard(
                     fontFamily = FontFamily.Monospace,
                 ),
         )
+
+        OutlinedButton(
+            onClick = {
+              val clipboard =
+                  context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
+              clipboard?.setPrimaryClip(ClipData.newPlainText("Kugo Hotspot", res.output))
+              Toast.makeText(context, copiedMessage, Toast.LENGTH_SHORT).show()
+            },
+        ) {
+          Text(text = stringResource(R.string.shizuku_copy))
+        }
       }
     }
   }

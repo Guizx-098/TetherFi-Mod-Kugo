@@ -16,6 +16,7 @@
 
 package com.pyamsoft.tetherfi.settings
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
@@ -26,6 +27,7 @@ import androidx.compose.ui.Modifier
 import com.pyamsoft.pydroid.theme.keylines
 import com.pyamsoft.pydroid.ui.inject.rememberComposableInjector
 import com.pyamsoft.pydroid.ui.util.rememberNotNull
+import com.pyamsoft.tetherfi.update.UpdateSettingsCard
 
 @Composable
 fun SettingsEntry(
@@ -39,10 +41,21 @@ fun SettingsEntry(
   val itemModifier =
       remember(baselinePadding) { Modifier.fillMaxWidth().padding(bottom = baselinePadding) }
 
-  SettingsScreen(
+  Column(
       modifier = modifier,
-      itemModifier = itemModifier,
-      appEnvironment = appEnvironment,
-      listState = lazyListState,
-  )
+  ) {
+    UpdateSettingsCard(
+        modifier =
+            Modifier.fillMaxWidth()
+                .padding(horizontal = baselinePadding)
+                .padding(bottom = baselinePadding),
+    )
+
+    SettingsScreen(
+        modifier = Modifier.weight(1f),
+        itemModifier = itemModifier,
+        appEnvironment = appEnvironment,
+        listState = lazyListState,
+    )
+  }
 }

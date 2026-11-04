@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright 2026 pyamsoft
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at:
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources>
+  <string name="update_section">Updates</string>
+  <string name="update_title">Update available</string>
+  <string name="update_message">Kugo Hotspot %1$s is available. You have version %2$s.</string>
+  <string name="update_current">Installed version: %1$s</string>
+  <string name="update_notes_title">What\'s new</string>
+  <string name="update_download">Download now</string>
+  <string name="update_later">Later</string>
+  <string name="update_downloading">Downloading... %1$d%%</string>
+  <string name="update_cancel">Cancel</string>
+  <string name="update_ready">Download finished. Tap Install to update.</string>
+  <string name="update_install">Install</string>
+  <string name="update_permission">Android needs your permission to install apps from this source. Tap Allow, turn it on, then come back and tap Install.</string>
+  <string name="update_allow">Allow</string>
+  <string name="update_error">Could not update: %1$s</string>
+  <string name="update_retry">Try again</string>
+  <string name="update_close">Close</string>
+  <string name="update_check">Check for updates</string>
+  <string name="update_checking">Checking...</string>
+  <string name="update_up_to_date">You have the latest version (%1$s).</string>
+</resources>
