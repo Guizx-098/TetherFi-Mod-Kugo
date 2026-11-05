@@ -43,7 +43,6 @@ import com.pyamsoft.tetherfi.status.sections.broadcast.BroadcastTypeSelection
 import com.pyamsoft.tetherfi.status.sections.broadcast.PreferredNetworkSelection
 import com.pyamsoft.tetherfi.status.sections.broadcast.renderBroadcastFrequency
 import com.pyamsoft.tetherfi.status.sections.network.renderNetworkInformation
-import com.pyamsoft.tetherfi.status.sections.shizuku.ShizukuHotspotCard
 import com.pyamsoft.tetherfi.ui.LANDSCAPE_MAX_WIDTH
 import com.pyamsoft.tetherfi.ui.ServerPortTypes
 import com.pyamsoft.tetherfi.ui.ServerViewState
@@ -57,7 +56,6 @@ private enum class StatusLoadedContentTypes {
   SPACER,
   BROADCAST_TYPE,
   PREFERRED_NETWORK,
-  SHIZUKU,
 }
 
 @LintIgnoreLongMethod
@@ -176,15 +174,6 @@ internal fun LazyListScope.renderLoadedContent(
           onSelectBroadcastType = onSelectBroadcastType,
       )
     }
-  }
-
-  item(
-      contentType = StatusLoadedContentTypes.SHIZUKU,
-  ) {
-    ShizukuHotspotCard(
-        modifier = itemModifier.padding(bottom = MaterialTheme.keylines.content),
-        state = state,
-    )
   }
 
   item(

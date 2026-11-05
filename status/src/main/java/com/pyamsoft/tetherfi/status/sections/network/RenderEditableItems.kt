@@ -20,7 +20,6 @@ package com.pyamsoft.tetherfi.status.sections.network
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,16 +28,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.Card
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -49,7 +43,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.pyamsoft.pydroid.core.LintIgnoreLongMethod
 import com.pyamsoft.pydroid.core.LintIgnoreTooManyFunctions
 import com.pyamsoft.pydroid.theme.keylines
-import com.pyamsoft.tetherfi.server.ServerDefaults
 import com.pyamsoft.tetherfi.server.broadcast.BroadcastType
 import com.pyamsoft.tetherfi.status.MutableStatusViewState
 import com.pyamsoft.tetherfi.status.R
@@ -57,8 +50,6 @@ import com.pyamsoft.tetherfi.status.StatusViewState
 import com.pyamsoft.tetherfi.ui.LANDSCAPE_MAX_WIDTH
 import com.pyamsoft.tetherfi.ui.ServerPortTypes
 import com.pyamsoft.tetherfi.ui.ServerViewState
-import com.pyamsoft.tetherfi.ui.dialog.CardDialog
-import com.pyamsoft.tetherfi.ui.icons.IconPainters
 import com.pyamsoft.tetherfi.ui.test.TEST_PASSWORD
 import com.pyamsoft.tetherfi.ui.test.TEST_SSID
 import com.pyamsoft.tetherfi.ui.test.TestServerState

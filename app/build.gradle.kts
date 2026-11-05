@@ -35,8 +35,8 @@ android {
   defaultConfig {
     applicationId = "com.guizx.kugohotspot"
 
-    versionCode = 8
-    versionName = "1.0.7"
+    versionCode = 9
+    versionName = "1.0.8"
 
     minSdk = libs.versions.minSdk.get().toInt()
     targetSdk = libs.versions.targetSdk.get().toInt()
@@ -171,10 +171,6 @@ dependencies {
   // PYDroid
   implementation(libs.pydroid.notify)
   implementation(libs.pydroid.ui)
-
-  // Shizuku (experimental hotspot without the DIRECT- prefix)
-  implementation(libs.shizuku.api)
-  implementation(libs.shizuku.provider)
 
   // For PYDroid we split between Google Play builds and fully FOSS
   add("fdroidImplementation", libs.pydroid.billing.noop)

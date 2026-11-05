@@ -67,7 +67,3 @@
 # Netty uses reflection heavily
 -keepattributes *Annotation*
 #############
-
-# Shizuku is called by name for its private newProcess function
--keep class rikka.shizuku.** { *; }
--dontwarn rikka.shizuku.**

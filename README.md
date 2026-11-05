@@ -43,9 +43,6 @@ celular já tem (Wi-Fi ou dados móveis). Não precisa de root.
 - Proxy SOCKS4A/SOCKS5H, para casos técnicos e específicos.
 - Ajuste do tempo limite de socket para quem precisa de mais desempenho ou estabilidade.
 
-**Experimental**
-- Hotspot nativo do Android sem o prefixo `DIRECT-` e sem proxy, via [Shizuku](https://shizuku.rikka.app/). Depende do aparelho e do modo do Shizuku (root ou ADB).
-
 **Aparelhos conectados**
 - Lista de conexões **atualizada em tempo real**: aparelhos que saem da rede deixam a lista
   sem precisar reiniciar o hotspot, e voltam sozinhos quando reconectam.
