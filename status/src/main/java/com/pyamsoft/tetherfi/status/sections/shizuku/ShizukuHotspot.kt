@@ -212,11 +212,19 @@ internal object ShizukuHotspot {
   private fun buildConfig(
       ssid: String,
       password: String,
-  ): SoftApConfiguration =
-      SoftApConfiguration.Builder()
-          .setSsid(ssid)
-          .setPassphrase(password, SoftApConfiguration.SECURITY_TYPE_WPA2_PSK)
-          .build()
+  ): SoftApConfiguration {
+    val builder = SoftApConfiguration.Builder()
+
+    // Setting the network name is a system API that the public SDK hides, so it is called by name.
+    // This works because wifiService() has already allowed hidden interfaces.
+    SoftApConfiguration.Builder::class
+        .java
+        .getMethod("setSsid", String::class.java)
+        .invoke(builder, ssid)
+
+    builder.setPassphrase(password, SoftApConfiguration.SECURITY_TYPE_WPA2_PSK)
+    return builder.build()
+  }
 
   @CheckResult
   private fun listHotspotMethods(service: Any): String =
